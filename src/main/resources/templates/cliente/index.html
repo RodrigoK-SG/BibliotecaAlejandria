@@ -44,38 +44,34 @@
                 <div class="row row-cols-1 row-cols-md-4 g-3">
                     <div class="col" th:each="libro : ${libros}">
                         <div class="card h-100 text-center border-0 shadow-sm p-2 bg-white">
-							<img th:src="${libro.imagenPortada != null ? libro.imagenPortada : 'https://via.placeholder.com/150x200'}" 
-							     class="card-img-top rounded mx-auto img-portada-catalogo" th:alt="${libro.titulo}">
+                            <img th:src="${libro.imagenPortada != null ? libro.imagenPortada : 'https://via.placeholder.com/150x200'}" 
+                                 class="card-img-top rounded mx-auto img-portada-catalogo" th:alt="${libro.titulo}">
                             
                             <div class="card-body p-2 d-flex flex-column justify-content-between">
                                 <div>
                                     <h6 class="fw-bold text-truncate mb-0" th:text="${libro.titulo}">Título del Libro</h6>
                                     
                                     <p class="text-muted small mb-2 text-truncate" 
-                                       th:text="${!libro.autores.isEmpty() ? libro.autores[0].nombre : 'Autor Anónimo'}">Nombre del Autor</p>
+                                       th:text="${!libro.autores.isEmpty() ? libro.autores.iterator().next().nombre : 'Autor Anónimo'}">Nombre del Autor</p>
                                     
                                     <div class="my-2 p-1 rounded bg-light small">
                                         <div class="d-flex justify-content-between px-2">
-                                            <span>Precio Venta:</span> 
+                                            <span>Precio:</span> 
                                             <strong th:text="'S/ ' + ${libro.precioVentaActual}">S/ 0.00</strong>
-                                        </div>
-                                        <div class="d-flex justify-content-between px-2 text-danger">
-                                            <span>Precio Alquiler:</span> 
-                                            <span th:text="'S/ ' + ${libro.precioAlquilerActual}">S/ 0.00</span>
                                         </div>
                                     </div>
                                 </div>
-								<div class="d-grid gap-1 mt-auto">
-									<form th:action="@{/catalogo/carrito/agregar}" method="POST">
-									    <input type="hidden" name="libroId" th:value="${libro.id}" />
-									    <input type="hidden" name="cantidad" value="1" />
-									    
-									    <button type="submit" class="btn btn-sm text-white fw-bold w-100" style="background-color: #c86b66;">
-									        Añadir al Carrito
-									    </button>
-									</form>
-								    <a th:href="@{/catalogo/libro/{slug}(slug=${libro.slug})}" class="btn btn-outline-secondary btn-sm">Ver detalle</a>
-								</div>
+                                <div class="d-grid gap-1 mt-auto">
+                                    <form th:action="@{/tienda/carrito/agregar}" method="POST">
+                                        <input type="hidden" name="libroId" th:value="${libro.id}" />
+                                        <input type="hidden" name="cantidad" value="1" />
+                                        
+                                        <button type="submit" class="btn btn-sm text-white fw-bold w-100" style="background-color: #c86b66;">
+                                            Añadir al Carrito
+                                        </button>
+                                    </form>
+                                    <a th:href="@{/tienda/libro/{slug}(slug=${libro.slug})}" class="btn btn-outline-secondary btn-sm">Ver detalle</a>
+                                </div>
                             </div>
                         </div>
                     </div>
