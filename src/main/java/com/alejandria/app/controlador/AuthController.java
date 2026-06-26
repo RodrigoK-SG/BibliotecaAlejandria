@@ -25,6 +25,7 @@ public class AuthController {
     @PostMapping("/registro")
     public String registrarUsuarioWeb(
             @RequestParam("nombreRazonSocial") String nombre,
+            @RequestParam("tipoDocumento") String tipoDocumento, // Agregado
             @RequestParam("email") String email,
             @RequestParam("password") String password,
             @RequestParam("nroDocumento") String nroDocumento) {
@@ -56,8 +57,10 @@ public class AuthController {
 
         // 4. Creamos el Perfil de Cliente y lo vinculamos al Usuario
         Cliente nuevoCliente = new Cliente();
-        nuevoCliente.setUsuario(usuarioGuardado); // Enlazamos el usuario recién creado
-        nuevoCliente.setTipoDocumento(TipoDocumento.DNI); // Puedes ajustar esto si recibes el tipo desde el HTML
+        nuevoCliente.setUsuario(usuarioGuardado);
+        
+        // Asignamos dinámicamente lo que eligió el usuario en el HTML
+        nuevoCliente.setTipoDocumento(TipoDocumento.valueOf(tipoDocumento)); 
         nuevoCliente.setNumeroDocumento(nroDocumento);
         
         // Guardamos el Cliente

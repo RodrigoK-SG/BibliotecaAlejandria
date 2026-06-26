@@ -238,11 +238,11 @@ VALUES
 ('Administrador',
 'admin@alejandria.com',
 '$2a$10$S2vE3fgmYApEz5isbGn5HecfO1Np7UyfdtNhuWeaqwnfyXiPcB7w.'),
-('Usuario Web',
-'web@alejandria.com',
-'$2a$10$S2vE3fgmYApEz5isbGn5HecfO1Np7UyfdtNhuWeaqwnfyXiPcB7w.'),
 ('Juan Almacén',
 'almacen@alejandria.com',
+'$2a$10$S2vE3fgmYApEz5isbGn5HecfO1Np7UyfdtNhuWeaqwnfyXiPcB7w.'),
+('Usuario Web',
+'web@alejandria.com',
 '$2a$10$S2vE3fgmYApEz5isbGn5HecfO1Np7UyfdtNhuWeaqwnfyXiPcB7w.');
 
 INSERT INTO USUARIO_ROL VALUES
@@ -497,3 +497,209 @@ VALUES
 'TAPA_BLANDA',
 55.90,
 2);
+
+INSERT INTO INVENTARIO_VENTA
+(LIBRO_ID,CANTIDAD_DISPONIBLE,CANTIDAD_RESERVADA,STOCK_MINIMO,STOCK_MAXIMO)
+VALUES
+(1,45,2,5,200),
+(2,32,1,5,200),
+(3,58,3,5,200),
+(4,20,0,5,100),
+(5,40,4,5,150),
+(6,18,1,5,100),
+(7,37,2,5,150),
+(8,29,0,5,120),
+(9,15,1,5,80),
+(10,24,0,5,100),
+(11,51,3,5,200),
+(12,43,2,5,150),
+(13,22,0,5,100),
+(14,27,1,5,120),
+(15,48,2,5,200),
+(16,36,1,5,150),
+(17,31,0,5,120),
+(18,26,1,5,120),
+(19,39,2,5,180),
+(20,34,1,5,150);
+
+INSERT INTO MOVIMIENTOS_INVENTARIO
+(USUARIO_ID,LIBRO_ID,TIPO_MOVIMIENTO,CANTIDAD,DESCRIPCION)
+VALUES
+
+(2,1,'INGRESO_PROVEEDOR',20,'Reposición de stock'),
+(2,1,'VENTA_ONLINE',5,'Venta realizada'),
+
+(2,2,'INGRESO_PROVEEDOR',15,'Compra a editorial'),
+(2,2,'VENTA_ONLINE',3,'Pedido web'),
+
+(2,3,'VENTA_ONLINE',6,'Venta online'),
+(2,3,'DEVOLUCION',2,'Cliente devolvió ejemplares'),
+
+(2,4,'INGRESO_PROVEEDOR',10,'Nueva edición'),
+(2,4,'VENTA_ONLINE',4,'Venta'),
+
+(2,5,'VENTA_ONLINE',8,'Venta'),
+(2,5,'DEVOLUCION',1,'Libro devuelto'),
+
+(2,6,'MERMA',2,'Libro deteriorado'),
+(2,6,'INGRESO_PROVEEDOR',8,'Reposición'),
+
+(2,7,'VENTA_ONLINE',5,'Venta'),
+(2,7,'INGRESO_PROVEEDOR',12,'Reposición'),
+
+(2,8,'VENTA_ONLINE',4,'Venta'),
+(2,8,'DEVOLUCION',1,'Devolución'),
+
+(2,9,'INGRESO_PROVEEDOR',5,'Compra'),
+(2,9,'VENTA_ONLINE',2,'Venta'),
+
+(2,10,'VENTA_ONLINE',3,'Venta'),
+(2,10,'MERMA',1,'Libro dañado'),
+
+(2,11,'INGRESO_PROVEEDOR',15,'Reposición'),
+(2,11,'VENTA_ONLINE',6,'Venta'),
+
+(2,12,'VENTA_ONLINE',5,'Venta'),
+(2,12,'DEVOLUCION',2,'Cliente devolvió'),
+
+(2,13,'INGRESO_PROVEEDOR',10,'Compra'),
+(2,13,'VENTA_ONLINE',4,'Venta'),
+
+(2,14,'VENTA_ONLINE',3,'Venta'),
+(2,14,'MERMA',1,'Libro maltratado'),
+
+(2,15,'INGRESO_PROVEEDOR',20,'Reposición'),
+(2,15,'VENTA_ONLINE',10,'Venta'),
+
+(2,16,'VENTA_ONLINE',5,'Venta'),
+(2,16,'DEVOLUCION',1,'Devolución'),
+
+(2,17,'INGRESO_PROVEEDOR',8,'Compra'),
+(2,17,'VENTA_ONLINE',4,'Venta'),
+
+(2,18,'VENTA_ONLINE',2,'Venta'),
+(2,18,'MERMA',1,'Libro dañado'),
+
+(2,19,'INGRESO_PROVEEDOR',12,'Reposición'),
+(2,19,'VENTA_ONLINE',5,'Venta'),
+
+(2,20,'VENTA_ONLINE',4,'Venta'),
+(2,20,'DEVOLUCION',1,'Cliente devolvió');
+
+INSERT INTO USUARIO (NOMBRE_COMPLETO,EMAIL,PASSWORD_HASH) VALUES
+('Carlos Pérez','carlos@gmail.com','$2a$10$S2vE3fgmYApEz5isbGn5HecfO1Np7UyfdtNhuWeaqwnfyXiPcB7w.'),
+('Ana Torres','ana@gmail.com','$2a$10$S2vE3fgmYApEz5isbGn5HecfO1Np7UyfdtNhuWeaqwnfyXiPcB7w.'),
+('Luis Rojas','luis@gmail.com','$2a$10$S2vE3fgmYApEz5isbGn5HecfO1Np7UyfdtNhuWeaqwnfyXiPcB7w.'),
+('María Flores','maria@gmail.com','$2a$10$S2vE3fgmYApEz5isbGn5HecfO1Np7UyfdtNhuWeaqwnfyXiPcB7w.'),
+('Pedro Díaz','pedro@gmail.com','$2a$10$S2vE3fgmYApEz5isbGn5HecfO1Np7UyfdtNhuWeaqwnfyXiPcB7w.');
+
+INSERT INTO USUARIO_ROL VALUES
+(4,3),
+(5,3),
+(6,3),
+(7,3),
+(8,3);
+
+INSERT INTO CLIENTE
+(USUARIO_ID,TIPO_DOCUMENTO,NUMERO_DOCUMENTO,TELEFONO)
+VALUES
+(3,'DNI','71234567','999111111'),
+(4,'DNI','71234568','999111112'),
+(5,'DNI','71234569','999111113'),
+(6,'DNI','71234570','999111114'),
+(7,'DNI','71234571','999111115'),
+(8,'DNI','71234572','999111116');
+
+INSERT INTO DIRECCION_ENVIO
+(CLIENTE_ID,ETIQUETA,DIRECCION_COMPLETA,CIUDAD,CODIGO_POSTAL)
+VALUES
+(1,'Casa','Av. Primavera 101','Lima','15001'),
+(2,'Casa','Av. Javier Prado 200','Lima','15002'),
+(3,'Casa','Av. Canadá 500','Lima','15003'),
+(4,'Casa','Av. Brasil 1200','Lima','15004'),
+(5,'Casa','Av. Arequipa 800','Lima','15005'),
+(6,'Casa','Av. Colonial 950','Lima','15006');
+
+INSERT INTO PEDIDO
+(CLIENTE_ID,DIRECCION_ENVIO_ID,ESTADO_ACTUAL,TOTAL,FECHA_PEDIDO)
+VALUES
+
+(1,1,'ENTREGADO',159.80,'2026-01-12'),
+(2,2,'ENTREGADO',279.70,'2026-01-28'),
+
+(3,3,'ENTREGADO',119.80,'2026-02-08'),
+(4,4,'ENTREGADO',369.60,'2026-02-20'),
+
+(5,5,'ENTREGADO',249.50,'2026-03-04'),
+(6,6,'ENTREGADO',429.30,'2026-03-25'),
+
+(2,2,'ENTREGADO',319.60,'2026-04-09'),
+(1,1,'ENTREGADO',459.50,'2026-04-22'),
+
+(4,4,'ENTREGADO',199.80,'2026-05-10'),
+(3,3,'ENTREGADO',589.70,'2026-05-26'),
+
+(6,6,'ENTREGADO',299.60,'2026-06-08'),
+(5,5,'ENTREGADO',499.40,'2026-06-24');
+
+INSERT INTO DETALLE_PEDIDO
+(PEDIDO_ID,LIBRO_ID,CANTIDAD,PRECIO_UNITARIO,SUBTOTAL)
+VALUES
+
+(1,1,2,79.90,159.80),
+
+(2,4,1,149.90,149.90),
+(2,9,1,179.90,179.90),
+
+(3,3,2,49.90,99.80),
+(3,11,1,39.90,39.90),
+
+(4,9,2,179.90,359.80),
+(4,11,1,9.80,9.80),
+
+(5,13,2,89.90,179.80),
+(5,16,1,69.70,69.70),
+
+(6,4,2,149.90,299.80),
+(6,15,2,64.75,129.50),
+
+(7,8,2,84.90,169.80),
+(7,20,3,49.93,149.80),
+
+(8,9,1,179.90,179.90),
+(8,4,1,149.90,149.90),
+(8,11,2,64.85,129.70),
+
+(9,5,2,69.90,139.80),
+(9,3,1,60.00,60.00),
+
+(10,4,2,149.90,299.80),
+(10,9,1,179.90,179.90),
+(10,1,1,110.00,110.00),
+
+(11,13,2,89.90,179.80),
+(11,18,2,59.90,119.80),
+
+(12,9,2,179.90,359.80),
+(12,3,2,69.80,139.60);
+
+INSERT INTO PAGO
+(PEDIDO_ID,METODO_PAGO,ESTADO_PAGO,MONTO,REFERENCIA_PAGO)
+SELECT
+ID,
+ELT((ID MOD 4)+1,'YAPE','PLIN','TARJETA_CREDITO','TRANSFERENCIA'),
+'APROBADO',
+TOTAL,
+CONCAT('PAGO-',ID)
+FROM PEDIDO;
+
+INSERT INTO COMPROBANTE_FISCAL
+(PEDIDO_ID,TIPO_COMPROBANTE,SERIE,NUMERO,MONTO_IMPUESTO,MONTO_TOTAL)
+SELECT
+ID,
+'BOLETA',
+'B001',
+LPAD(ID,8,'0'),
+ROUND(TOTAL*0.18,2),
+TOTAL
+FROM PEDIDO;

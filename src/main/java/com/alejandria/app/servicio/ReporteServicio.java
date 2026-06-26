@@ -1,13 +1,11 @@
 package com.alejandria.app.servicio;
 
-import com.alejandria.app.modelo.enums.CanalVenta;
 import com.alejandria.app.repositorio.PedidoRepositorio;
 import com.alejandria.app.repositorio.DetallePedidoRepositorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,13 +29,17 @@ public class ReporteServicio {
         LocalDateTime inicioMes = fechaSeleccionada.atStartOfDay();
         LocalDateTime finMes = fechaSeleccionada.withDayOfMonth(fechaSeleccionada.lengthOfMonth()).atTime(LocalTime.MAX);
 
-        reporte.put("ingresosTotales", pedidoRepositorio.sumarIngresosPorFecha(inicioMes, finMes));
+        // 1. Ingresos Totales (Suma general sin importar canal)
+        Double ingresos = pedidoRepositorio.sumarIngresosPorFecha(inicioMes, finMes);
+        reporte.put("ingresosTotales", ingresos != null ? ingresos : 0.0);
+        
         reporte.put("librosVendidos", detallePedidoRepositorio.sumarLibrosVendidosPorFecha(inicioMes, finMes));
         
         String nombreMes = fechaSeleccionada.format(DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("es", "ES")));
         reporte.put("mesActualTexto", nombreMes.substring(0, 1).toUpperCase() + nombreMes.substring(1));
         reporte.put("mesActualInput", fechaSeleccionada.format(DateTimeFormatter.ofPattern("yyyy-MM")));
 
+        // 2. Gráfico de Dona: Top 5 Libros
         List<Object[]> top5Raw = detallePedidoRepositorio.obtenerTopLibrosVendidos(inicioMes, finMes, PageRequest.of(0, 5));
         List<String> topLabels = new ArrayList<>();
         List<Long> topData = new ArrayList<>();
@@ -49,9 +51,10 @@ public class ReporteServicio {
         reporte.put("topLibrosLabels", topLabels);
         reporte.put("topLibrosData", topData);
 
+        // 3. Gráfico de Barras: Histórico de 5 meses
         List<String> chartLabels = new ArrayList<>();
-        List<BigDecimal> chartFisico = new ArrayList<>();
-        List<BigDecimal> chartOnline = new ArrayList<>();
+        List<Double> chartFisico = new ArrayList<>();
+        List<Double> chartOnline = new ArrayList<>();
 
         for (int i = 4; i >= 0; i--) {
             LocalDate mesIteracion = fechaSeleccionada.minusMonths(i);
@@ -60,13 +63,16 @@ public class ReporteServicio {
             
             chartLabels.add(mesIteracion.format(DateTimeFormatter.ofPattern("MMM", new Locale("es", "ES"))).toUpperCase());
             
-            chartFisico.add(pedidoRepositorio.sumarIngresosPorCanalYFecha(CanalVenta.valueOf("FISICO"), inicioIter, finIter));
-            chartOnline.add(pedidoRepositorio.sumarIngresosPorCanalYFecha(CanalVenta.valueOf("ONLINE"), inicioIter, finIter));
+            // Calculamos todo como venta Online y enviamos 0 a las ventas Físicas
+            Double totalMes = pedidoRepositorio.sumarIngresosPorFecha(inicioIter, finIter);
+            
+            chartOnline.add(totalMes != null ? totalMes : 0.0);
+            chartFisico.add(0.0);
         }
 
         reporte.put("chartLabels", chartLabels);
-        reporte.put("chartFisicas", chartFisico);
-        reporte.put("chartOnline", chartOnline);
+        reporte.put("chartVentasFisicas", chartFisico); 
+        reporte.put("chartVentasOnline", chartOnline);
 
         return reporte;
     }
