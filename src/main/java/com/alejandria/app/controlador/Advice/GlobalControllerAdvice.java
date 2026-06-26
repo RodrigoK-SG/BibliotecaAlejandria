@@ -1,4 +1,4 @@
-package com.alejandria.app.filtro;
+package com.alejandria.app.controlador.Advice;
 
 import com.alejandria.app.modelo.Usuario;
 import com.alejandria.app.servicio.UsuarioServicio;
@@ -19,15 +19,15 @@ public class GlobalControllerAdvice {
     public Usuario cargarUsuarioGlobal() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         
-        // Verificamos si hay alguien logueado (y que no sea un usuario anónimo)
+        // Verificamos si hay alguien logueado (y que no sea un usuario anónimo de Spring)
         if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
-            // auth.getName() normalmente devuelve el "username" (en tu caso, el email)
+            // auth.getName() devuelve el "username" (en tu caso, el email usado en el login)
             String emailLogueado = auth.getName(); 
             
-            // Buscamos el objeto Usuario completo en la BD y lo enviamos al HTML
-            return usuarioServicio.buscarPorEmail(emailLogueado); 
+            // Buscamos el objeto Usuario completo, y usamos .orElse(null) para extraerlo del Optional
+            return usuarioServicio.buscarPorEmail(emailLogueado).orElse(null); 
         }
         
-        return null; // Si no hay nadie logueado (ej. página de login)
+        return null; // Si no hay nadie logueado, Thymeleaf simplemente recibirá un null
     }
 }

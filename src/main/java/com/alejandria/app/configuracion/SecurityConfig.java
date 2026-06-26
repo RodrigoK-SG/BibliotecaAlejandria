@@ -28,37 +28,36 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Desactivado por ahora para facilitar el desarrollo
             
             .authorizeHttpRequests(auth -> auth
-            	    // 1. Rutas PÚBLICAS (Añadimos todas las estáticas que consolidamos)
-            	    .requestMatchers("/error", "/", "/catalogo", "/catalogo/libro/**", 
-            	                     "/catalogo/vista-login", "/registro",
-            	                     "/catalogo/historia", "/catalogo/sucursales", "/catalogo/contacto", 
-            	                     "/catalogo/blog", "/catalogo/reglamento", "/catalogo/terminos", 
-            	                     "/catalogo/reclamaciones", "/catalogo/envio", "/catalogo/devolucion").permitAll()
-            	    
-            	    .requestMatchers("/css/**", "/js/**", "/img/**", "/static/**").permitAll()
-            	    
-            	    // 2. Rutas PROTEGIDAS POR ROL
-            	    .requestMatchers("/admin/**").hasAuthority("ADMINISTRADOR")
-            	    .requestMatchers("/vendedor/**").hasAuthority("VENDEDOR")
-            	    .requestMatchers("/bibliotecario/**").hasAuthority("BIBLIOTECARIO")
-            	    .requestMatchers("/almacen/**").hasAuthority("ALMACENERO")
-            	    
-            	    // 3. Rutas de Cliente (Asegúrate que coincidan con tu controlador: /pagos o /checkout)
-            	    .requestMatchers("/catalogo/perfil/**", "/catalogo/pagos").hasAnyAuthority("CLIENTE_WEB", "ADMINISTRADOR")
-            	    
-            	    // Cualquier otra ruta requiere estar logueado
-            	    .anyRequest().authenticated()
-            	)
+                // 1. Rutas PÚBLICAS (Accesibles por cualquiera sin iniciar sesión)
+                .requestMatchers("/error", "/", "/tienda", "/tienda/libro/**", 
+                                 "/tienda/vista-login", "/registro",
+                                 "/tienda/contacto", "/tienda/reglamento", "/tienda/terminos", 
+                                 "/tienda/reclamaciones", "/tienda/envio", "/tienda/devolucion").permitAll()
+                
+                // Recursos estáticos (CSS, JS, Imágenes)
+                .requestMatchers("/css/**", "/js/**", "/img/**", "/static/**").permitAll()
+                
+                // 2. Rutas PROTEGIDAS POR ROL ESTRICTO
+                .requestMatchers("/admin/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers("/almacen/**").hasAuthority("ALMACENERO")
+                
+                // 3. Rutas de Cliente Web (Carrito, Checkout, Perfil)
+                // Se permite al ADMIN entrar para poder hacer pruebas de compra en desarrollo
+                .requestMatchers("/tienda/perfil/**", "/tienda/carrito/**", "/tienda/pagos", "/tienda/checkout").hasAnyAuthority("CLIENTE_WEB", "ADMINISTRADOR")
+                
+                // Cualquier otra ruta requiere estar logueado
+                .anyRequest().authenticated()
+            )
             .formLogin(form -> form
-                .loginPage("/catalogo/vista-login") // La URL donde está tu HTML de login
+                .loginPage("/tienda/vista-login") // La URL donde está tu HTML de login
                 .loginProcessingUrl("/login") // La ruta que procesa el <form th:action="@{/login}"> (Spring lo hace automático)
-                .successHandler(loginSuccessHandler) // ¡Usamos nuestro enrutador!
-                .failureUrl("/catalogo/vista-login?error=true") // Si falla, recarga con error
+                .successHandler(loginSuccessHandler) // ¡Usamos nuestro enrutador simplificado!
+                .failureUrl("/tienda/vista-login?error=true") // Si falla, recarga con error
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/catalogo/vista-login") // Al salir, volvemos al login
+                .logoutSuccessUrl("/tienda") // Al salir, enviamos al usuario a la página de inicio pública
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
