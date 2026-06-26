@@ -1,9 +1,10 @@
-package com.biblioteca.app.controlador;
+package com.alejandria.app.controlador;
 
-import com.biblioteca.app.modelo.Rol;
-import com.biblioteca.app.modelo.Usuario;
-import com.biblioteca.app.servicio.RolServicio;
-import com.biblioteca.app.servicio.UsuarioServicio;
+import com.alejandria.app.modelo.Rol;
+import com.alejandria.app.modelo.Usuario;
+import com.alejandria.app.repositorio.RolRepositorio;
+import com.alejandria.app.repositorio.UsuarioRepositorio;
+import com.alejandria.app.servicio.UsuarioServicio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/usuarios")
@@ -20,13 +21,19 @@ import java.util.List;
 public class AdminUsuarioControlador {
 
     private final UsuarioServicio usuarioServicio;
-    private final RolServicio rolServicio;
-    private final PasswordEncoder passwordEncoder; // Para encriptar las contraseñas
+    private final UsuarioRepositorio usuarioRepository;
+    private final RolRepositorio rolRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     public String verUsuarios(Model model) {
-        // Obtenemos todos los usuarios excepto los CLIENTE_WEB
-        model.addAttribute("usuarios", usuarioServicio.listarPersonalAdmin());
+        // Filtramos para mostrar únicamente al personal administrativo (Admin y Almaceneros)
+        // Excluimos las cuentas de clientes de la tienda pública
+        List<Usuario> personalAdministrativo = usuarioServicio.listarTodos().stream()
+                .filter(u -> u.getRoles().stream().noneMatch(r -> r.getNombre().equals("CLIENTE_WEB")))
+                .collect(Collectors.toList());
+
+        model.addAttribute("usuarios", personalAdministrativo);
         return "administrador/usuarios"; 
     }
 
@@ -41,18 +48,16 @@ public class AdminUsuarioControlador {
             Usuario nuevoUsuario = new Usuario();
             nuevoUsuario.setNombreCompleto(nombreCompleto);
             nuevoUsuario.setEmail(email);
-            // Encriptar la contraseña
             nuevoUsuario.setPasswordHash(passwordEncoder.encode(password));
             nuevoUsuario.setActivo(activo);
 
-            // Asignar el Rol
-            Rol rol = rolServicio.buscarPorNombre(rolNombre);
-            List<Rol> roles = new ArrayList<>();
-            roles.add(rol);
-            nuevoUsuario.setRoles(roles);
+            // CORREGIDO: Buscamos el rol y lo agregamos directamente al Set con .add()
+            Rol rol = rolRepository.findByNombre(rolNombre)
+                    .orElseThrow(() -> new RuntimeException("El rol especificado no existe en el sistema."));
+            nuevoUsuario.getRoles().add(rol);
 
-            usuarioServicio.guardar(nuevoUsuario);
-            redirectAttributes.addFlashAttribute("exito", "Usuario registrado correctamente.");
+            usuarioRepository.save(nuevoUsuario);
+            redirectAttributes.addFlashAttribute("exito", "Usuario del sistema registrado correctamente.");
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al registrar el usuario: " + e.getMessage());
@@ -69,27 +74,28 @@ public class AdminUsuarioControlador {
                                 @RequestParam(value = "activo", defaultValue = "false") boolean activo,
                                 RedirectAttributes redirectAttributes) {
         try {
-            Usuario usuario = usuarioServicio.buscarPorId(id);
+            Usuario usuario = usuarioServicio.buscarPorId(id)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+                    
             usuario.setNombreCompleto(nombreCompleto);
             usuario.setEmail(email);
             usuario.setActivo(activo);
 
-            // Solo actualizar contraseña si se escribió una nueva
             if (password != null && !password.trim().isEmpty()) {
                 usuario.setPasswordHash(passwordEncoder.encode(password));
             }
 
-            // Actualizar el Rol
-            Rol rol = rolServicio.buscarPorNombre(rolNombre);
-            List<Rol> roles = new ArrayList<>();
-            roles.add(rol);
-            usuario.setRoles(roles);
+            // CORREGIDO: Limpiamos el Set anterior y añadimos el nuevo rol asignado
+            Rol rol = rolRepository.findByNombre(rolNombre)
+                    .orElseThrow(() -> new RuntimeException("El rol especificado no existe."));
+            usuario.getRoles().clear();
+            usuario.getRoles().add(rol);
 
-            usuarioServicio.guardar(usuario);
-            redirectAttributes.addFlashAttribute("exito", "Perfil de usuario actualizado.");
+            usuarioRepository.save(usuario);
+            redirectAttributes.addFlashAttribute("exito", "Perfil de usuario actualizado correctamente.");
 
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al actualizar: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar el usuario: " + e.getMessage());
         }
         return "redirect:/admin/usuarios";
     }
@@ -97,10 +103,9 @@ public class AdminUsuarioControlador {
     @PostMapping("/desactivar")
     public String desactivarUsuario(@RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
-            Usuario usuario = usuarioServicio.buscarPorId(id);
-            usuario.setActivo(false); // Solo se cambia el estado, no se elimina
-            usuarioServicio.guardar(usuario);
-            redirectAttributes.addFlashAttribute("exito", "Usuario desactivado correctamente.");
+            // Reutilizamos la lógica del servicio para suspender el acceso de un usuario
+            usuarioServicio.actualizarEstado(id, false);
+            redirectAttributes.addFlashAttribute("exito", "El usuario ha sido suspendido del sistema.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al desactivar: " + e.getMessage());
         }

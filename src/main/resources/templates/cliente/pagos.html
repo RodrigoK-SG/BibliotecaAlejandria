@@ -6,74 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/estilos.css">
-    
-    <style>
-        .custom-radio-input { display: none; }
-        .radio-card {
-            border: 1px solid #dee2e6;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-            background-color: #ffffff;
-        }
-        .custom-radio-input:checked + .radio-card {
-            border-color: #c86b66;
-            background-color: #fffaf9; 
-        }
-        .radio-dot {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #dee2e6;
-            border-radius: 50%;
-            margin-right: 15px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .custom-radio-input:checked + .radio-card .radio-dot { border-color: #c86b66; }
-        .custom-radio-input:checked + .radio-card .radio-dot::after {
-            content: ''; width: 10px; height: 10px; background-color: #c86b66; border-radius: 50%; position: absolute;
-        }
-        .btn-comprobante { border: none; background-color: transparent; color: #6c757d; }
-        .btn-comprobante.active {
-            background-color: #ffffff; box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075); font-weight: bold; color: #212529; border-radius: 0.5rem;
-        }
-        .sub-panel-form { display: none; width: 100%; transition: all 0.3s ease; }
-		
-		/* Estilos para los botones del mini-contador en el resumen */
-		.btn-qty {
-		    border: 1px solid #dee2e6;
-		    background-color: #ffffff;
-		    padding: 0 8px;
-		    font-weight: bold;
-		    font-size: 0.85rem;
-		    transition: all 0.2s;
-		}
-		.btn-qty:hover {
-		    background-color: #f8f9fa;
-		    border-color: #c86b66;
-		}
-		.qty-number {
-		    min-width: 25px;
-		    text-align: center;
-		    font-size: 0.9rem;
-		}
-		.btn-trash {
-		    border: none;
-		    background: transparent;
-		    color: #dc3545;
-		    padding: 0 5px;
-		    font-size: 1.1rem;
-		    transition: transform 0.2s;
-		}
-		.btn-trash:hover {
-		    transform: scale(1.15);
-		}
-    </style>
+    <link rel="stylesheet" href="/css/pagos.css">
 </head>
 <body class="bg-light">
 
@@ -81,105 +14,28 @@
 
     <div class="container mt-4 mb-5">
         <div class="mb-2">
-            <a href="/catalogo" class="text-decoration-none text-muted small"><i class="bi bi-chevron-left"></i> Volver al catálogo</a>
+            <a href="/tienda" class="text-decoration-none text-muted small"><i class="bi bi-chevron-left"></i> Volver al catálogo</a>
         </div>
         <h3 class="fw-bold mb-4">Finalizar Compra</h3>
         
-        <form th:action="@{/catalogo/pedido/completar}" method="POST" onsubmit="return validarCamposDinamicos()">
+        <form th:action="@{/tienda/checkout}" method="POST" id="formCheckout">
             <div class="row g-4">
                 
                 <div class="col-lg-8">
-                    
                     <div class="card border-0 shadow-sm p-4 mb-4 bg-white" style="border-radius: 12px;">
-                        <h5 class="fw-bold mb-4"><span class="badge rounded-circle me-2" style="background-color: #c86b66; padding: 0.5em 0.7em;">1</span>Datos del Cliente</h5>
+                        <h5 class="fw-bold mb-4"><span class="badge rounded-circle me-2" style="background-color: #c86b66; padding: 0.5em 0.7em;">1</span>Información de Envío</h5>
                         
                         <div class="mb-3">
-                            <label class="form-label small text-muted fw-bold mb-1">Tipo de Documento</label>
-                            <div class="d-flex gap-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="tipoDocumento" value="DNI" id="docDni" checked>
-                                    <label class="form-check-label" for="docDni">DNI</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="tipoDocumento" value="RUC" id="docRuc">
-                                    <label class="form-check-label" for="docRuc">RUC</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small text-muted fw-bold mb-1">Número de Documento</label>
-                            <input type="text" name="numeroDocumento" id="numeroDocumento" class="form-control" placeholder="Ingrese su número" required>
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label small text-muted fw-bold mb-1">Nombre / Razón Social</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white text-muted border-end-0"><i class="bi bi-person"></i></span>
-                                    <input type="text" name="nombre" class="form-control border-start-0 ps-0" placeholder="Ej. Juan Pérez" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small text-muted fw-bold mb-1">Correo Electrónico</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white text-muted border-end-0"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" name="email" class="form-control border-start-0 ps-0" placeholder="ejemplo@correo.com" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card border-0 shadow-sm p-4 mb-4 bg-white" style="border-radius: 12px;">
-                        <h5 class="fw-bold mb-4"><span class="badge rounded-circle me-2" style="background-color: #c86b66; padding: 0.5em 0.7em;">2</span>Tipo de Entrega</h5>
-                        
-                        <div class="mb-3">
-                            <input type="radio" name="tipoEntrega" id="entregaRecojo" value="RECOJO" class="custom-radio-input" checked onchange="manejarCambioEntrega()">
-                            <label for="entregaRecojo" class="radio-card w-100">
-                                <div class="radio-dot"></div>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-light p-2 rounded-circle"><i class="bi bi-shop fs-5 text-secondary"></i></div>
-                                    <div>
-                                        <h6 class="mb-0 fw-bold">Recojo en Tienda</h6>
-                                        <small class="text-muted">Gratis • Disponible hoy mismo</small>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-
-                        <div>
-                            <input type="radio" name="tipoEntrega" id="entregaDelivery" value="DELIVERY" class="custom-radio-input" onchange="manejarCambioEntrega()">
-                            <label for="entregaDelivery" class="radio-card w-100 flex-column align-items-start">
-                                <div class="d-flex align-items-center w-100">
-                                    <div class="radio-dot"></div>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-light p-2 rounded-circle"><i class="bi bi-truck fs-5 text-secondary"></i></div>
-                                        <div>
-                                            <h6 class="mb-0 fw-bold" style="color: #c86b66;">Delivery a Domicilio</h6>
-                                            <small class="text-muted">S/ 5.99 • Entrega en 24-48 hrs</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div id="camposDireccion" class="row g-2 w-100 mt-3 ms-4 ps-2 sub-panel-form">
-                                    <div class="col-md-8">
-                                        <label class="form-label small text-muted mb-1">Dirección de Envío</label>
-                                        <input type="text" name="direccion" id="inputDireccion" class="form-control form-control-sm" placeholder="Av. Principal 123">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small text-muted mb-1">Código Postal</label>
-                                        <input type="text" name="codigoPostal" id="inputCP" class="form-control form-control-sm" placeholder="Ej. 15001">
-                                    </div>
-                                </div>
-                            </label>
+                            <label class="form-label small text-muted fw-bold mb-1">Dirección Completa de Envío</label>
+                            <input type="text" name="direccionCompleta" id="inputDireccion" class="form-control" placeholder="Av. Principal 123, Distrito, Ciudad" required>
                         </div>
                     </div>
 
                     <div class="card border-0 shadow-sm p-4 bg-white" style="border-radius: 12px;">
-                        <h5 class="fw-bold mb-4"><span class="badge rounded-circle me-2" style="background-color: #c86b66; padding: 0.5em 0.7em;">3</span>Método de Pago</h5>
+                        <h5 class="fw-bold mb-4"><span class="badge rounded-circle me-2" style="background-color: #c86b66; padding: 0.5em 0.7em;">2</span>Método de Pago</h5>
                         
                         <div class="d-flex flex-column gap-2">
-                            <input type="radio" name="metodoPago" id="pagoTarjeta" value="TARJETA" class="custom-radio-input" checked onchange="manejarCambioPago()">
+                            <input type="radio" name="metodoPago" id="pagoTarjeta" value="TARJETA_CREDITO" class="custom-radio-input" checked>
                             <label for="pagoTarjeta" class="radio-card w-100 flex-column align-items-start">
                                 <div class="d-flex align-items-center w-100 py-1">
                                     <div class="radio-dot"></div>
@@ -198,7 +54,7 @@
                                 </div>
                             </label>
 
-                            <input type="radio" name="metodoPago" id="pagoYape" value="YAPE" class="custom-radio-input" onchange="manejarCambioPago()">
+                            <input type="radio" name="metodoPago" id="pagoYape" value="YAPE" class="custom-radio-input">
                             <label for="pagoYape" class="radio-card w-100 flex-column align-items-start">
                                 <div class="d-flex align-items-center w-100 py-1">
                                     <div class="radio-dot"></div>
@@ -206,256 +62,57 @@
                                 </div>
                                 <div id="panelYape" class="row g-2 w-100 mt-2 ms-4 ps-2 sub-panel-form">
                                     <div class="col-6"><input type="text" id="yapeTelf" class="form-control form-control-sm" placeholder="Número de Celular"></div>
-                                    <div class="col-6"><input type="text" id="yapeCod" class="form-control form-control-sm" placeholder="Código de Aprobación (6 dígitos)"></div>
+                                    <div class="col-6"><input type="text" id="yapeCod" class="form-control form-control-sm" placeholder="Código de Aprobación"></div>
                                 </div>
-                            </label>
-
-                            <input type="radio" name="metodoPago" id="pagoPlin" value="PLIN" class="custom-radio-input" onchange="manejarCambioPago()">
-                            <label for="pagoPlin" class="radio-card w-100 flex-column align-items-start">
-                                <div class="d-flex align-items-center w-100 py-1">
-                                    <div class="radio-dot"></div>
-                                    <span class="badge text-white me-2 rounded-circle" style="background-color: #00d9b4; padding: 4px 8px;">P</span> <span class="fw-bold small">Plin</span>
-                                </div>
-                                <div id="panelPlin" class="row g-2 w-100 mt-2 ms-4 ps-2 sub-panel-form">
-                                    <div class="col-6"><input type="text" id="plinTelf" class="form-control form-control-sm" placeholder="Número de Celular"></div>
-                                    <div class="col-6"><input type="text" id="plinCod" class="form-control form-control-sm" placeholder="Código de Aprobación"></div>
-                                </div>
-                            </label>
-
-                            <input type="radio" name="metodoPago" id="pagoEfectivo" value="EFECTIVO" class="custom-radio-input" onchange="manejarCambioPago()">
-                            <label for="pagoEfectivo" class="radio-card w-100 py-2">
-                                <div class="radio-dot"></div>
-                                <i class="bi bi-cash-coin text-success me-2"></i> <span class="fw-bold small">Efectivo</span>
                             </label>
                         </div>
                     </div>
                 </div> 
 
-				<div class="col-lg-4">
-				    <div class="card border-0 shadow-sm p-4 bg-white sticky-top" style="border-radius: 16px;">
-				        <h5 class="fw-bold mb-4">Resumen del Pedido</h5>
-				        
-				        <div id="contenedorItemsResumen">
-				            <div th:each="item : ${itemsCarrito}" th:id="'item-row-' + ${item.libro.id}" class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
-				                <div class="d-flex align-items-center gap-3">
-				                    <img th:src="${item.libro.imagenPortada}" width="50" class="rounded shadow-sm">
-				                    <div>
-				                        <h6 class="fw-bold mb-0 text-truncate" style="max-width: 140px;" th:text="${item.libro.titulo}">Libro</h6>
-				                        <strong class="text-muted small item-precio-unitario" th:data-precio="${item.libro.precioVentaActual}" th:text="'S/ ' + ${item.libro.precioVentaActual}">S/ 0.00</strong>
-				                    </div>
-				                </div>
-				                
-				                <div class="d-flex align-items-center gap-2">
-				                    <div class="d-flex align-items-center bg-light rounded border">
-				                        <button type="button" class="btn btn-qty rounded-start" th:onclick="'modificarCantidad(' + ${item.libro.id} + ', -1)'">-</button>
-				                        <span th:id="'qty-' + ${item.libro.id}" class="qty-number fw-bold text-dark" th:text="${item.cantidad}">1</span>
-				                        <button type="button" class="btn btn-qty rounded-end" th:onclick="'modificarCantidad(' + ${item.libro.id} + ', 1)'">+</button>
-				                    </div>
-				                    <button type="button" class="btn btn-trash" th:onclick="'eliminarItemResumen(' + ${item.libro.id} + ')'">
-				                        <i class="bi bi-trash3-fill"></i>
-				                    </button>
-				                </div>
-				            </div>
-				        </div>
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm p-4 bg-white sticky-top" style="border-radius: 16px;">
+                        <h5 class="fw-bold mb-4">Resumen del Pedido</h5>
+                        
+                        <div id="contenedorItemsResumen">
+                            <div th:each="item : ${itemsCarrito}" class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img th:src="${item.libro.imagenPortada != null ? item.libro.imagenPortada : 'https://via.placeholder.com/50x75'}" width="50" class="rounded shadow-sm">
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-truncate" style="max-width: 140px;" th:text="${item.libro.titulo}">Libro</h6>
+                                        <strong class="text-muted small" th:text="${item.cantidad} + ' und x S/ ' + ${item.libro.precioVentaActual}">1 x S/ 0.00</strong>
+                                    </div>
+                                </div>
+                                <div class="fw-bold text-dark" th:text="'S/ ' + ${item.libro.precioVentaActual * item.cantidad}">S/ 0.00</div>
+                            </div>
+                        </div>
 
-				        <div class="mb-4">
-				            <label class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing: 0.5px;">Comprobante de Pago</label>
-				            <div class="d-flex bg-light p-1 rounded" style="border-radius: 0.5rem;">
-				                <input type="radio" class="btn-check" name="comprobante" id="boleta" autocomplete="off" checked onchange="cambiarComprobante('boleta')">
-				                <label class="btn btn-comprobante w-50 active" id="lblBoleta" for="boleta">Boleta</label>
-
-				                <input type="radio" class="btn-check" name="comprobante" id="factura" autocomplete="off" onchange="cambiarComprobante('factura')">
-				                <label class="btn btn-comprobante w-50" id="lblFactura" for="factura">Factura</label>
-				            </div>
-				        </div>
-
-				        <div class="d-flex justify-content-between mb-2 small text-muted">
-				            <span>Subtotal</span>
-				            <span id="resumenSubtotal" th:attr="data-subtotal=${subtotal}" th:text="'S/ ' + ${subtotal}">S/ 0.00</span>
-				        </div>
-				        <div class="d-flex justify-content-between mb-2 small text-muted">
-				            <span>Costo de Envío</span>
-				            <span id="resumenEnvio">S/ 5.99</span>
-				        </div>
-				        <hr>
-				        <div class="d-flex justify-content-between align-items-center mb-4">
-				            <span class="fw-bold fs-5">Total</span>
-				            <h4 class="fw-bold m-0" id="resumenTotal" th:text="'S/ ' + ${totalReal}">S/ 107.37</h4>
-				        </div>
-				        
-				        <button type="submit" class="btn text-white w-100 py-3 fw-bold shadow-sm" style="background-color: #c86b66; border-radius: 8px;">
-				            Completar Pedido
-				        </button>
-				        <p class="text-center text-muted mt-3 mb-0" style="font-size: 0.75rem;"><i class="bi bi-lock-fill text-warning"></i> Pago 100% seguro</p>
-				    </div>
-				</div>
+                        <div class="d-flex justify-content-between mb-2 small text-muted mt-3">
+                            <span>Subtotal</span>
+                            <span th:text="'S/ ' + ${subtotal}">S/ 0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 small text-muted">
+                            <span>Costo de Envío (Tarifa Plana)</span>
+                            <span>S/ 5.99</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span class="fw-bold fs-5">Total a Pagar</span>
+                            <h4 class="fw-bold m-0 text-danger" th:text="'S/ ' + ${totalReal}">S/ 0.00</h4>
+                        </div>
+                        
+                        <button type="submit" class="btn text-white w-100 py-3 fw-bold shadow-sm" style="background-color: #c86b66; border-radius: 8px;">
+                            Confirmar y Pagar Pedido
+                        </button>
+                        <p class="text-center text-muted mt-3 mb-0" style="font-size: 0.75rem;"><i class="bi bi-lock-fill text-warning"></i> Transacción 100% segura</p>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 
     <div th:replace="~{componentes/componente :: footer}"></div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-	<!-- SCRIPT INTEGRAL CON TODAS LAS FUNCIONES CONECTADAS A LA BD -->
-	<script>
-	    // 1. Despliegue dinámico de los campos de Tipo de Entrega (Delivery / Recojo)
-	    function manejarCambioEntrega() {
-	        var delivery = document.getElementById('entregaDelivery').checked;
-	        var camposDir = document.getElementById('camposDireccion');
-	        var txtEnvio = document.getElementById('resumenEnvio');
-	        var txtTotal = document.getElementById('resumenTotal');
-	        var subtotal = parseFloat(document.getElementById('resumenSubtotal').getAttribute('data-subtotal')) || 0.0;
-	        
-	        if (delivery) {
-	            camposDir.style.display = 'flex';
-	            txtEnvio.innerText = 'S/ 5.99';
-	            txtTotal.innerText = 'S/ ' + (subtotal + 5.99).toFixed(2);
-	        } else {
-	            camposDir.style.display = 'none';
-	            txtEnvio.innerText = 'Gratis';
-	            txtTotal.innerText = 'S/ ' + subtotal.toFixed(2);
-	        }
-	    }
-
-	    // 2. RECUPERADO: Despliegue dinámico de los subpaneles de Método de Pago
-	    function manejarCambioPago() {
-	        document.getElementById('panelTarjeta').style.display = 'none';
-	        document.getElementById('panelYape').style.display = 'none';
-	        document.getElementById('panelPlin').style.display = 'none';
-
-	        if (document.getElementById('pagoTarjeta').checked) {
-	            document.getElementById('panelTarjeta').style.display = 'flex';
-	        } else if (document.getElementById('pagoYape').checked) {
-	            document.getElementById('panelYape').style.display = 'flex';
-	        } else if (document.getElementById('pagoPlin').checked) {
-	            document.getElementById('panelPlin').style.display = 'flex';
-	        }
-	    }
-
-	    // 3. Alterna visualmente la selección de Boleta o Factura
-	    function cambiarComprobante(tipo) {
-	        var lblBoleta = document.getElementById('lblBoleta');
-	        var lblFactura = document.getElementById('lblFactura');
-	        
-	        if (tipo === 'boleta') {
-	            lblBoleta.classList.add('active');
-	            lblFactura.classList.remove('active');
-	        } else {
-	            lblFactura.classList.add('active');
-	            lblBoleta.classList.remove('active');
-	        }
-	    }
-
-	    // 4. Modifica la cantidad de un libro de forma asíncrona con la Base de Datos
-		// 4. CORREGIDO: Modifica la cantidad de un libro enviando el parámetro exacto que espera el controlador
-			    function modificarCantidad(libroId, cambio) {
-			        var spanQty = document.getElementById('qty-' + libroId);
-			        var cantidadActual = parseInt(spanQty.innerText) || 1;
-			        var nuevaCantidad = cantidadActual + cambio;
-			        
-			        if (nuevaCantidad < 1) return;
-			        
-			        // CAMBIADO: Se modificó '&cantidad=' por '&nuevaCantidad=' para coincidir con tu Controlador Java
-			        fetch('/catalogo/carrito/actualizar-cantidad?libroId=' + libroId + '&nuevaCantidad=' + nuevaCantidad, {
-			            method: 'POST'
-			        })
-			        .then(response => {
-			            if (response.ok) {
-			                spanQty.innerText = nuevaCantidad;
-			                recalcularCostosTotales();
-			            } else {
-			                alert("No se pudo actualizar el stock en la base de datos.");
-			            }
-			        })
-			        .catch(error => console.error("Error:", error));
-			    }
-
-	    // 5. Remueve la fila del resumen y la borra de la BD permanentemente
-	    function eliminarItemResumen(libroId) {
-	        if (!confirm("¿Estás seguro de que deseas quitar este libro del resumen?")) return;
-
-	        fetch('/catalogo/carrito/eliminar-item?libroId=' + libroId, {
-	            method: 'POST'
-	        })
-	        .then(response => response.text())
-	        .then(data => {
-	            if (data.trim() === "OK") {
-	                var fila = document.getElementById('item-row-' + libroId);
-	                if (fila) {
-	                    fila.remove();
-	                    recalcularCostosTotales();
-	                }
-	            } else {
-	                alert("El servidor no pudo eliminar el registro: " + data);
-	            }
-	        })
-	        .catch(error => console.error("Error completo:", error));
-	    }
-
-	    // 6. Recalcula las matemáticas locales basándose en las filas vigentes
-	    function recalcularCostosTotales() {
-	        var contenedor = document.getElementById('contenedorItemsResumen');
-	        var filas = contenedor.children;
-	        var nuevoSubtotal = 0.0;
-	        
-	        for (var i = 0; i < filas.length; i++) {
-	            var fila = filas[i];
-	            var libroId = fila.id.replace('item-row-', '');
-	            var cantidad = parseInt(document.getElementById('qty-' + libroId).innerText) || 0;
-	            var precioUnitario = parseFloat(fila.querySelector('.item-precio-unitario').getAttribute('data-precio')) || 0.0;
-	            
-	            nuevoSubtotal += (precioUnitario * cantidad);
-	        }
-	        
-	        var nodeSubtotal = document.getElementById('resumenSubtotal');
-	        nodeSubtotal.setAttribute('data-subtotal', nuevoSubtotal.toFixed(2));
-	        nodeSubtotal.innerText = 'S/ ' + nuevoSubtotal.toFixed(2);
-	        
-	        manejarCambioEntrega();
-	    }
-
-	    // 7. Validaciones estrictas antes de procesar el pedido
-	    function validarCamposDinamicos() {
-	        if (document.getElementById('entregaDelivery').checked) {
-	            var dir = document.getElementById('inputDireccion').value.trim();
-	            var cp = document.getElementById('inputCP').value.trim();
-	            if (!dir || !cp) {
-	                alert("Por favor, ingrese su dirección completa y código postal para el delivery.");
-	                return false;
-	            }
-	        }
-
-	        if (document.getElementById('pagoTarjeta').checked) {
-	            var num = document.getElementById('tarjetaNum').value.trim();
-	            var fecha = document.getElementById('tarjetaFecha').value.trim();
-	            var cvc = document.getElementById('tarjetaCvc').value.trim();
-	            if (!num || !fecha || !cvc) {
-	                alert("Complete todos los campos de su tarjeta bancaria.");
-	                return false;
-	            }
-	        } else if (document.getElementById('pagoYape').checked) {
-	            var telf = document.getElementById('yapeTelf').value.trim();
-	            var cod = document.getElementById('yapeCod').value.trim();
-	            if (!telf || !cod) {
-	                alert("Ingrese su número de celular y el código de aprobación de Yape.");
-	                return false;
-	            }
-	        } else if (document.getElementById('pagoPlin').checked) {
-	            var telfP = document.getElementById('plinTelf').value.trim();
-	            var codP = document.getElementById('plinCod').value.trim();
-	            if (!telfP || !codP) {
-	                alert("Ingrese su número de celular y el código de transferencia de Plin.");
-	                return false;
-	            }
-	        }
-	        return true;
-	    }
-
-	    // Inicializador al cargar la página
-	    document.addEventListener("DOMContentLoaded", function() {
-	        manejarCambioEntrega();
-	        manejarCambioPago();
-	    });
-	</script>
+    <script src="/js/pagos.js"></script>
 </body>
 </html>

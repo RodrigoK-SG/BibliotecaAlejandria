@@ -41,7 +41,7 @@
         <div class="d-flex justify-content-between align-items-end mb-4">
             <div>
                 <h2 class="fw-semibold mb-1">Stock General</h2>
-                <p class="text-muted small mb-0">Inventario consolidado de la librería.</p>
+                <p class="text-muted small mb-0">Inventario consolidado de la tienda virtual.</p>
             </div>
             
             <div class="d-flex gap-2">
@@ -59,10 +59,10 @@
                         <th class="ps-4">LIBRO</th>
                         <th>EDITORIAL</th>
                         <th>ISBN</th>
-                        <th>PRECIO (S/)</th>
+                        <th>PRECIO VENTA</th>
                         <th class="text-center">DISPONIBLE</th>
-                        <th class="text-center">ESTADO</th>
-                        <th class="text-center pe-4">CATÁLOGO</th>
+                        <th class="text-center">ESTADO LÓGICO</th>
+                        <th class="text-center pe-4">VISIBILIDAD WEB</th>
                     </tr>
                 </thead>
                 <tbody id="tablaStock">
@@ -70,36 +70,35 @@
                     <tr th:if="${#lists.isEmpty(listaStock)}">
                         <td colspan="7" class="text-center text-muted py-5">
                             <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
-                            El inventario está vacío.
+                            El inventario logístico está vacío. Registre un movimiento inicial.
                         </td>
                     </tr>
 
                     <tr th:each="item : ${listaStock}">
                         <td class="ps-4 py-3">
-                            <div class="fw-semibold text-dark" th:text="${item.titulo}">Título del Libro</div>
-                            <small class="text-muted" th:text="${item.slug}">/slug</small>
+                            <div class="fw-semibold text-dark" th:text="${item.libro.titulo}">Título del Libro</div>
+                            <small class="text-muted" th:text="${item.libro.slug}">/slug</small>
                         </td>
                         
-                        <td class="text-secondary small fw-medium" th:text="${item.editorial}">Editorial</td>
+                        <td class="text-secondary small fw-medium" th:text="${item.libro.editorial != null ? item.libro.editorial.nombre : 'Sin Editorial'}">Editorial</td>
 
-                        <td class="font-monospace text-secondary" style="font-size: 0.9rem;" th:text="${item.isbn}">ISBN</td>
+                        <td class="font-monospace text-secondary" style="font-size: 0.9rem;" th:text="${item.libro.isbn}">ISBN</td>
                         
-                        <td class="fw-bold text-dark" th:text="${item.precio}">0.00</td>
+                        <td class="fw-bold text-dark" th:text="'S/ ' + ${item.libro.precioVentaActual}">0.00</td>
                         
                         <td class="text-center">
                             <span class="fs-5 fw-bold font-monospace" th:text="${item.cantidadDisponible}">0</span>
                         </td>
 
-                        <td class="text-center">
-                            <span th:if="${item.estadoStock == 'ALTO'}" class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-2 w-75">Alto</span>
-                            <span th:if="${item.estadoStock == 'SUFICIENTE'}" class="badge bg-primary bg-opacity-10 text-primary border border-primary rounded-pill px-3 py-2 w-75">Suficiente</span>
-                            <span th:if="${item.estadoStock == 'BAJO'}" class="badge bg-warning bg-opacity-10 text-warning border border-warning rounded-pill px-3 py-2 w-75">Bajo Stock</span>
-                            <span th:if="${item.estadoStock == 'AGOTADO'}" class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-3 py-2 w-75">Agotado</span>
+                        <td class="text-center" th:with="estado=${item.cantidadDisponible == 0 ? 'AGOTADO' : (item.cantidadDisponible <= item.stockMinimo ? 'BAJO' : 'SUFICIENTE')}">
+                            <span th:if="${estado == 'SUFICIENTE'}" class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-2 w-75">Suficiente</span>
+                            <span th:if="${estado == 'BAJO'}" class="badge bg-warning bg-opacity-10 text-warning border border-warning rounded-pill px-3 py-2 w-75">Bajo Stock</span>
+                            <span th:if="${estado == 'AGOTADO'}" class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-3 py-2 w-75">Agotado</span>
                         </td>
                         
                         <td class="text-center pe-4">
-                            <i th:if="${item.activoCatalogo}" class="bi bi-check-circle-fill text-success fs-5" title="Visible en la tienda"></i>
-                            <i th:unless="${item.activoCatalogo}" class="bi bi-eye-slash-fill text-muted fs-5" title="Oculto de la tienda"></i>
+                            <i th:if="${item.libro.activo}" class="bi bi-check-circle-fill text-success fs-5" title="Visible en la tienda"></i>
+                            <i th:unless="${item.libro.activo}" class="bi bi-eye-slash-fill text-muted fs-5" title="Oculto de la tienda"></i>
                         </td>
                     </tr>
                 </tbody>

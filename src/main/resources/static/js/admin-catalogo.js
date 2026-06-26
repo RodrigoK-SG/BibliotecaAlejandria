@@ -7,13 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const button = event.relatedTarget;
             
-            // Extraer info
+            // Extraer info (Limpiado: sin variables de alquiler)
             const id = button.getAttribute('data-id');
             const isbn = button.getAttribute('data-isbn');
             const titulo = button.getAttribute('data-titulo');
             const formato = button.getAttribute('data-formato');
             const pVenta = button.getAttribute('data-pventa');
-            const pAlquiler = button.getAttribute('data-palquiler');
             const editorial = button.getAttribute('data-editorial');
             const activo = button.getAttribute('data-activo') === 'true';
 
@@ -21,9 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
             modalEditar.querySelector('#editId').value = id;
             modalEditar.querySelector('#editIsbn').value = isbn;
             modalEditar.querySelector('#editTitulo').value = titulo;
-            modalEditar.querySelector('#editFormato').value = formato; // Al ser un select, buscará el value exacto (TAPA_BLANDA, etc)
+            modalEditar.querySelector('#editFormato').value = formato; 
             modalEditar.querySelector('#editPrecioVenta').value = pVenta;
-            modalEditar.querySelector('#editPrecioAlquiler').value = pAlquiler;
             modalEditar.querySelector('#editEditorial').value = editorial;
             
             // Switch de estado

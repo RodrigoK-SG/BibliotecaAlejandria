@@ -1,4 +1,4 @@
-package com.biblioteca.app.controlador;
+package com.alejandria.app.controlador;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.biblioteca.app.servicio.ReporteServicio;
+import com.alejandria.app.servicio.ReporteServicio;
 import lombok.RequiredArgsConstructor;
 import java.util.Map;
 
@@ -22,10 +22,10 @@ public class AdminReporteControlador {
             @RequestParam(value = "mes", required = false) String mes, 
             Model model) {
         
-        // Llamamos a toda la lógica de negocio
+        // El servicio procesa las consultas nativas matemáticas y retorna el mapa de datos
         Map<String, Object> datos = reporteServicio.generarReporteMensual(mes);
         
-        // Inyectamos todo el mapa en el modelo para que Thymeleaf lo lea
+        // Inyectamos todas las llaves del mapa directamente para que Thymeleaf las pinte
         model.addAllAttributes(datos);
         
         return "administrador/reportes"; 

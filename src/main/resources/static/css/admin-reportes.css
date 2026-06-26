@@ -9,7 +9,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
-/* Navbar (Mismo estilo unificado) */
+/* Navbar */
 .navbar-admin { background-color: var(--sbs-beige); border-bottom: 2px solid #d5c5b5; }
 .navbar-brand { color: var(--sbs-maroon) !important; font-weight: bold; font-size: 1.5rem; }
 .nav-tabs { border-bottom: none; }
@@ -32,21 +32,6 @@ body {
 
 .kpi-title { font-size: 0.85rem; color: #8a929a; margin-bottom: 0.5rem; font-weight: 500; }
 .kpi-value { font-size: 2rem; font-weight: 700; color: #212529; margin-bottom: 0; }
-
-/* Íconos de KPI con fondos suaves */
-.icon-wrapper {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-
-.icon-green { background-color: #d1fae5; color: #10b981; font-weight: bold; font-size: 1.2rem;}
-.icon-blue { background-color: #dbeafe; color: #3b82f6; }
-.icon-purple { background-color: #f3e8ff; color: #a855f7; }
 
 /* Contenedores de Gráficos */
 .chart-card {

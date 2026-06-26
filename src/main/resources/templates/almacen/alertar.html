@@ -47,22 +47,22 @@
             <p class="text-muted mb-0">No hay libros con stock bajo o agotado en este momento.</p>
         </div>
 
-        <div th:each="alerta : ${listaAlertas}" 
-             th:classappend="${alerta.estadoStock == 'AGOTADO' ? 'alert-danger-custom' : 'alert-warning-custom'}"
+        <div th:each="alerta : ${listaAlertas}" th:with="estadoStock=${alerta.cantidadDisponible == 0 ? 'AGOTADO' : 'BAJO'}"
+             th:classappend="${estadoStock == 'AGOTADO' ? 'alert-danger-custom' : 'alert-warning-custom'}"
              class="alert-card p-4 mb-3 shadow-sm d-flex align-items-center justify-content-between">
             
             <div class="d-flex align-items-start gap-4">
-                <div class="icon-circle flex-shrink-0" th:classappend="${alerta.estadoStock == 'AGOTADO' ? 'icon-danger' : 'icon-warning'}">
-                    <i class="bi" th:classappend="${alerta.estadoStock == 'AGOTADO' ? 'bi-x-octagon-fill' : 'bi-exclamation-triangle-fill'}"></i>
+                <div class="icon-circle flex-shrink-0" th:classappend="${estadoStock == 'AGOTADO' ? 'icon-danger' : 'icon-warning'}">
+                    <i class="bi" th:classappend="${estadoStock == 'AGOTADO' ? 'bi-x-octagon-fill' : 'bi-exclamation-triangle-fill'}"></i>
                 </div>
                 
                 <div>
-                    <h5 class="fw-bold mb-0 text-dark" th:text="${alerta.titulo}">Título del Libro</h5>
-                    <p class="text-muted small mb-2" th:text="${alerta.isbn + ' - Editorial ' + alerta.editorial}">ISBN - Editorial</p>
+                    <h5 class="fw-bold mb-0 text-dark" th:text="${alerta.libro.titulo}">Título del Libro</h5>
+                    <p class="text-muted small mb-2" th:text="${alerta.libro.isbn + ' - Editorial ' + (alerta.libro.editorial != null ? alerta.libro.editorial.nombre : 'S/E')}">ISBN - Editorial</p>
                     
                     <p class="small fw-bold mb-1" 
-                       th:classappend="${alerta.estadoStock == 'AGOTADO' ? 'text-danger' : 'text-warning-custom'}"
-                       th:text="${alerta.estadoStock == 'AGOTADO' ? 'Producto agotado — sin unidades disponibles' : 'Stock por debajo del mínimo establecido'}">
+                       th:classappend="${estadoStock == 'AGOTADO' ? 'text-danger' : 'text-warning-custom'}"
+                       th:text="${estadoStock == 'AGOTADO' ? 'Producto agotado — sin unidades disponibles' : 'Stock por debajo del mínimo establecido'}">
                     </p>
                     
                     <p class="text-muted small mb-0">
@@ -74,7 +74,7 @@
             
             <div>
                 <button class="btn btn-maroon rounded-pill px-4 py-2" style="font-size: 0.9rem;">
-                    <i class="bi bi-cart3 me-1"></i> Generar orden de compra
+                    <i class="bi bi-cart3 me-1"></i> Generar orden
                 </button>
             </div>
         </div>

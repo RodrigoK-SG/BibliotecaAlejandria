@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctxBar, {
             type: 'bar',
             data: {
-                // CONSUMIMOS LAS VARIABLES INYECTADAS POR THYMELEAF
                 labels: window.chartLabels,
                 datasets: [
                     {
@@ -52,12 +51,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 2. Gráfico de Dona: Top 5 Libros Más Alquilados
+    // 2. Gráfico de Dona: Top 5 Libros Más Vendidos
     const canvasDoughnut = document.getElementById('topLibrosChart');
     if (canvasDoughnut && window.topLibrosLabels && window.topLibrosLabels.length > 0) {
         
-        // Formatear labels para incluir el porcentaje/cantidad si se desea, 
-        // aquí los usamos directo como vienen de Java
         const ctxDoughnut = canvasDoughnut.getContext('2d');
         new Chart(ctxDoughnut, {
             type: 'doughnut',
@@ -65,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: window.topLibrosLabels,
                 datasets: [{
                     data: window.topLibrosData,
-                    // Paleta de colores atractiva para los 5 top libros
                     backgroundColor: ['#475569', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
                     borderWidth: 4,
                     borderColor: '#ffffff',
@@ -79,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 plugins: {
                     legend: {
                         position: 'right',
-                        display: true // Habilitado para ver los nombres
+                        display: true 
                     },
                     tooltip: { enabled: true }
                 },
