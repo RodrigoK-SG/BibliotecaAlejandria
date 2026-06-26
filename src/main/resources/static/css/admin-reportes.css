@@ -1,0 +1,84 @@
+:root { 
+    --sbs-maroon: #b64c4c; 
+    --sbs-beige: #eaddcf; 
+    --sbs-bg: #f4f6f8; 
+}
+
+body { 
+    background-color: var(--sbs-bg); 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+/* Navbar (Mismo estilo unificado) */
+.navbar-admin { background-color: var(--sbs-beige); border-bottom: 2px solid #d5c5b5; }
+.navbar-brand { color: var(--sbs-maroon) !important; font-weight: bold; font-size: 1.5rem; }
+.nav-tabs { border-bottom: none; }
+.nav-tabs .nav-link { color: #8a929a; border: none; font-weight: 500; padding: 1rem 1.5rem; }
+.nav-tabs .nav-link:hover { color: #000; }
+.nav-tabs .nav-link.active { background-color: transparent; color: #000; border-bottom: 3px solid #000; }
+
+/* Dashboard Cards */
+.kpi-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #eef0f2;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.kpi-title { font-size: 0.85rem; color: #8a929a; margin-bottom: 0.5rem; font-weight: 500; }
+.kpi-value { font-size: 2rem; font-weight: 700; color: #212529; margin-bottom: 0; }
+
+/* Íconos de KPI con fondos suaves */
+.icon-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.icon-green { background-color: #d1fae5; color: #10b981; font-weight: bold; font-size: 1.2rem;}
+.icon-blue { background-color: #dbeafe; color: #3b82f6; }
+.icon-purple { background-color: #f3e8ff; color: #a855f7; }
+
+/* Contenedores de Gráficos */
+.chart-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #eef0f2;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    height: 100%;
+}
+
+.chart-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 1.5rem;
+}
+
+/* Ajustes del canvas para que no se desborde */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Botón de Filtro */
+.btn-filter {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}

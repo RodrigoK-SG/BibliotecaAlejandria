@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedido Exitoso | Librería de Alejandría</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+        <div class="card border-0 shadow-lg p-5 text-center" style="max-width: 500px; border-radius: 20px;">
+            
+            <div class="alert alert-success d-flex align-items-center justify-content-center gap-2 mb-4 py-2 small fw-bold" role="alert" style="border-radius: 10px;">
+                <i class="bi bi-cloud-check-fill fs-5"></i>
+                <span>El comprobante de pago ha sido generado y descargado.</span>
+            </div>
+
+            <div class="mb-3">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 4.5rem;"></i>
+            </div>
+            
+            <h2 class="fw-bold text-dark mb-2">¡Compra Exitosa!</h2>
+            <p class="text-muted small mb-4">
+                ¡Gracias por tu compra, André! Tu pedido ha sido procesado correctamente y ya estamos preparando tus libros.
+            </p>
+            
+            <div class="bg-light p-3 rounded mb-4">
+                <p class="small text-muted mb-0">ID de Confirmación de Pedido</p>
+                <h5 class="fw-bold text-dark m-0" th:text="'#' + ${pedidoId != null ? pedidoId : '17'}">#17</h5>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <a href="/catalogo" class="btn btn-primary py-2 fw-bold" style="background-color: #c86b66; border-color: #c86b66; border-radius: 8px;">
+                    Seguir comprando
+                </a>
+                <a href="/catalogo/perfil" class="btn btn-outline-secondary py-2 fw-bold" style="border-radius: 8px;">
+                    Ver mis pedidos
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

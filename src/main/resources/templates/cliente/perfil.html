@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librería de Alejandría - Mi Cuenta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body class="bg-alejandria-page">
+
+    <div th:replace="~{componentes/componente :: navbar}"></div>
+
+    <div class="container mt-4 mb-5">
+        <div class="row g-4">
+            
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <a href="/catalogo" class="text-decoration-none btn-volver-catalogo text-muted small fw-bold">
+                        <i class="bi bi-chevron-left me-1"></i> Volver al catálogo
+                    </a>
+                </div>
+
+                <div class="card border-0 shadow-sm p-2 sidebar-menu bg-white" style="border-radius: 12px;">
+                    <div class="p-2 mb-2">
+                        <h6 class="text-uppercase fw-bold text-secondary m-0 small" style="letter-spacing: 1px;">Mi Cuenta</h6>
+                    </div>
+					<div class="list-group list-group-flush" id="profileTabs" role="tablist">
+					                        <!-- Mis Pedidos: Solo está activo si no venimos de guardar un cambio -->
+					                        <button class="list-group-item list-group-item-action border-0 rounded-2 p-3" 
+					                                th:classappend="${param.cambioExitoso == null and param.errorPassword == null} ? 'active' : ''" 
+					                                data-tab="tab-pedidos">
+					                            <i class="bi bi-box-seam me-3 text-secondary"></i>Mis Pedidos
+					                        </button>
+					                        
+					                        <button class="list-group-item list-group-item-action border-0 rounded-2 p-3" data-tab="tab-prestamos">
+					                            <i class="bi bi-book me-3 text-secondary"></i>Mis Préstamos
+					                        </button>
+					                        
+					                        <button class="list-group-item list-group-item-action border-0 rounded-2 p-3" data-tab="tab-multas">
+					                            <i class="bi bi-exclamation-triangle me-3 text-secondary"></i>Mis Multas
+					                        </button>
+					                        
+					                        <!-- Ajustes: Se activa automáticamente si la URL tiene cambioExitoso o errorPassword -->
+					                        <button class="list-group-item list-group-item-action border-0 rounded-2 p-3" 
+					                                th:classappend="${param.cambioExitoso != null or param.errorPassword != null} ? 'active' : ''" 
+					                                data-tab="tab-ajustes">
+					                            <i class="bi bi-gear me-3 text-secondary"></i>Ajustes de Cuenta
+					                        </button>
+					                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                
+                <div class="card p-4 mb-4 border-0 shadow-sm profile-header-card" style="background-color: #f8fafc; border-radius: 12px; border: 1px solid #e9ecef;">
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                            <i class="bi bi-person" style="font-size: 2.5rem; color: #c86b66;"></i>
+                        </div>
+						<div>
+						    <h4 class="fw-bold m-0 text-dark mb-1" th:text="${nombreRazonSocial}">Juan Pérez</h4>
+						    <p class="text-muted m-0 small mb-1">
+						        Tipo de Documento: <span th:text="${tipoDocumento}">DNI</span>
+						    </p>
+						    <p class="text-muted m-0 small mb-1">
+						        N° Documento: <span th:text="${numeroDocumento}">74839201</span>
+						    </p>
+						    <p class="text-muted m-0 small">
+						        Correo: <span th:text="${emailContacto}">juan.perez@ejemplo.com</span>
+						    </p>
+						</div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm p-4 bg-white min-vh-50" style="border-radius: 12px;">
+					<div id="tab-pedidos" class="nav-tab-content" th:classappend="${param.cambioExitoso == null and param.errorPassword == null} ? 'active' : ''">
+					                        <h5 class="fw-bold text-dark mb-4" style="font-family: 'Georgia', serif;">Historial de Pedidos</h5>
+					                        <!-- ... el resto de tu tabla ... -->
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle border-light">
+                                <thead class="table-light">
+                                    <tr class="small text-muted">
+                                        <th class="fw-normal">N° Pedido</th>
+                                        <th class="fw-normal">Fecha de Pedido</th>
+                                        <th class="fw-normal">Tipo de Entrega</th>
+                                        <th class="fw-normal">Total</th>
+                                        <th class="fw-normal">Estado Actual</th>
+                                        <th class="text-end fw-normal">Acción</th>
+                                    </tr>
+                                </thead>
+								<tbody>
+								    <!-- El th:each recorre la lista real que envía el controlador -->
+								    <tr th:each="pedido : ${listaPedidos}">
+								        <!-- Muestra el ID real del pedido guardado en MySQL -->
+								        <td class="fw-bold text-dark small" th:text="'PED-' + ${pedido.id}">PED-00123</td>
+								        
+								        <!-- Muestra la fecha del pedido. Si agregaron el campo fechaPedido, se formatea aquí -->
+								        <td class="small" th:text="${pedido.id != null ? 'Hoy mismo' : '15 May 2026'}">15 May 2026</td>
+								        
+								        <!-- Muestra el tipo de entrega (DELIVERY / RECOJO) de tu Enum -->
+								        <td class="small" th:text="${pedido.tipoEntrega != null ? pedido.tipoEntrega.name() : 'Regular'}">Delivery</td>
+								        
+								        <!-- Muestra el monto total real cobrado en la pasarela -->
+								        <td class="fw-bold text-dark small" th:text="'S/ ' + ${pedido.total}">S/ 120.00</td>
+								        
+								        <!-- Pinta el badge de color de forma dinámica según el estado real de la BD -->
+										<td>
+										    <span th:if="${pedido.estadoActual.name() == 'PENDIENTE'}" class="badge bg-warning bg-opacity-25 text-warning px-3 py-1 rounded-pill fw-normal">Pendiente</span>
+										    <span th:if="${pedido.estadoActual.name() == 'PROCESANDO'}" class="badge bg-info bg-opacity-10 text-info px-3 py-1 rounded-pill fw-normal">Procesando</span>
+										    <span th:if="${pedido.estadoActual.name() == 'ENVIADO'}" class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill fw-normal">Enviado</span>
+										    <span th:if="${pedido.estadoActual.name() == 'ENTREGADO'}" class="badge bg-success bg-opacity-10 text-success px-3 py-1 rounded-pill fw-normal">Entregado</span>
+										    <span th:if="${pedido.estadoActual.name() == 'CANCELADO'}" class="badge bg-danger bg-opacity-10 text-danger px-3 py-1 rounded-pill fw-normal">Cancelada</span>
+										</td>
+								        
+								        <!-- El enlace dinámico que viaja al controlador enviando el ID del pedido para abrir los detalles -->
+								        <td class="text-end">
+								            <a th:href="@{/catalogo/pedidos/detalle/{id}(id=${pedido.id})}" class="text-decoration-none small text-danger fw-bold text-hover-coral">Ver detalle</a>
+								        </td>
+								    </tr>
+								    
+								    <!-- Si la lista de la BD está vacía, muestra este mensaje limpio -->
+								    <tr th:if="${#lists.isEmpty(listaPedidos)}">
+								        <td colspan="6" class="text-center py-4 text-muted small">No registras ningún pedido actualmente.</td>
+								    </tr>
+								</tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="tab-prestamos" class="nav-tab-content">
+                        <h5 class="fw-bold text-dark mb-4" style="font-family: 'Georgia', serif;">Mis Préstamos de Biblioteca</h5>
+                        <div class="d-flex flex-column gap-3">
+                            <div class="card p-3 border border-light shadow-sm" th:each="prestamo : ${listaPrestamos}" style="border-radius: 12px;">
+                                <div class="row align-items-center g-3">
+                                    <div class="col-md-2 text-center">
+                                        <img th:src="${prestamo.ejemplarBiblioteca.libro.imagenPortada}" class="img-fluid rounded shadow-sm" style="max-height: 100px;" alt="Portada">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold text-dark m-0 mb-1" th:text="${prestamo.ejemplarBiblioteca.libro.titulo}">Título del Libro</h6>
+                                        <p class="text-muted m-0 small"><strong>Fecha Préstamo:</strong> <span th:text="${#temporals.format(prestamo.fechaPrestamo, 'dd/MM/yyyy')}">10/05/2026</span></p>
+                                        <p class="m-0 small text-danger"><strong>Devolución Esperada:</strong> <span th:text="${#temporals.format(prestamo.fechaDevolucionEsperada, 'dd/MM/yyyy')}">30/05/2026</span></p>
+                                        <p class="text-muted m-0 small"><strong>Costo Alquiler:</strong> S/ <span th:text="${prestamo.costoAlquiler}">8.00</span></p>
+                                    </div>
+                                    <div class="col-md-4 text-md-end text-start">
+                                        <div class="mb-2">
+                                            <span th:if="${prestamo.estado.name() == 'EN_CURSO'}" class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-normal">En Curso</span>
+                                            <span th:if="${prestamo.estado.name() == 'RETRASADO'}" class="badge bg-warning bg-opacity-25 text-warning px-3 py-2 rounded-pill fw-normal">Retrasado</span>
+                                            <span th:if="${prestamo.estado.name() == 'DEVUELTO'}" class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-normal">Devuelto</span>
+                                            <span th:if="${prestamo.estado.name() == 'PERDIDO'}" class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill fw-normal">Perdido</span>
+                                        </div>
+                                        <button th:if="${prestamo.estado.name() == 'EN_CURSO' or prestamo.estado.name() == 'RETRASADO'}" 
+                                                class="btn btn-sm text-white fw-bold btn-renovar mt-1" 
+                                                th:data-id="${prestamo.id}" 
+                                                style="background-color: #c86b66; border-radius: 8px;" data-bs-toggle="modal" data-bs-target="#modalRenovacion">
+                                            Renovar Préstamo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${#lists.isEmpty(listaPrestamos)}" class="text-center py-4 text-muted small">
+                                No tienes préstamos registrados en el sistema de biblioteca.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-multas" class="nav-tab-content">
+                        <h5 class="fw-bold text-dark mb-4" style="font-family: 'Georgia', serif;">Historial de Multas y Penalizaciones</h5>
+                        <div class="table-responsive">
+                            <table class="table align-middle border-light">
+                                <thead class="table-light">
+                                    <tr class="small text-muted">
+                                        <th class="fw-normal">Motivo / Descripción</th>
+                                        <th class="fw-normal">Monto Extra</th>
+                                        <th class="fw-normal">Estado de Multa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="multa : ${listaMultas}">
+                                        <td>
+                                            <div class="fw-bold text-dark small" th:text="${multa.motivo}">Retraso en devolución</div>
+                                            <small class="text-muted" th:text="'Asociado al Préstamo ID: #' + ${multa.prestamo.id}">Ref: Prestamo #1</small>
+                                        </td>
+                                        <td class="fw-bold text-dark small" th:text="'S/ ' + ${multa.monto}">S/ 15.00</td>
+                                        <td>
+                                            <span th:if="${multa.estado.name() == 'PENDIENTE'}" class="badge bg-danger bg-opacity-10 text-danger px-3 py-1 rounded-pill fw-normal">Pendiente</span>
+                                            <span th:if="${multa.estado.name() == 'PAGADO'}" class="badge bg-success bg-opacity-10 text-success px-3 py-1 rounded-pill fw-normal">Pagado</span>
+                                            <span th:if="${multa.estado.name() == 'PERDONADO'}" class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-1 rounded-pill fw-normal">Perdonado</span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(listaMultas)}">
+                                        <td colspan="3" class="text-center py-4 text-muted small">
+                                            No registras ninguna penalización pendiente.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+					<div id="tab-ajustes" class="nav-tab-content" th:classappend="${param.cambioExitoso != null or param.errorPassword != null} ? 'active' : ''">
+					                        <h5 class="fw-bold text-dark mb-4" style="font-family: 'Georgia', serif;">Datos Personales</h5>
+											<form th:action="@{/catalogo/perfil/actualizar}" method="POST">
+					                        <!-- ... el resto de tu formulario ... -->
+						    
+						    <div th:if="${param.cambioExitoso}" class="alert alert-success py-2 small text-center mb-3" role="alert" style="border-radius: 8px;">
+						        <i class="bi bi-check-circle-fill me-1"></i> ¡Perfil y credenciales actualizados con éxito!
+						    </div>
+						    <div th:if="${param.errorPassword}" class="alert alert-danger py-2 small text-center mb-3" role="alert" style="border-radius: 8px;">
+						        <i class="bi bi-exclamation-triangle-fill me-1"></i> La contraseña actual es incorrecta.
+						    </div>
+
+                            <input type="hidden" name="id" th:value="${cliente != null ? cliente.id : ''}" />
+                            
+							<div class="row g-3 mb-4">
+														    <div class="col-md-12">
+														        <label class="form-label small text-muted">Nombre / Razón Social</label>
+														        <input type="text" class="form-control p-2 bg-light border-light" name="nombreRazonSocial" th:value="${nombreRazonSocial}" required style="border-radius: 8px;">
+														    </div>
+							                                
+							                                <div class="col-md-6">
+							                                    <label class="form-label small text-muted">Número de Documento (DNI/RUC)</label>
+							                                    <input type="text" class="form-control p-2 bg-light border-light" name="nroDocumento" 
+							                                           th:value="${numeroDocumento != 'No registrado' ? numeroDocumento : ''}" 
+							                                           placeholder="Ej. 74839201" style="border-radius: 8px;">
+							                                </div>
+							                                
+															<div class="col-md-6">
+															    <label class="form-label small text-muted">Teléfono Celular</label>
+															    <input type="text" class="form-control p-2 bg-light border-light" name="telefono" placeholder="+51" style="border-radius: 8px;">
+															</div>
+							                                
+															<div class="col-md-12">
+															    <label class="form-label small text-muted">Correo Electrónico</label>
+															    <input type="email" class="form-control p-2 bg-light border-light text-muted" 
+															           name="emailContacto" th:value="${emailContacto}" required readonly style="border-radius: 8px;">
+															</div>
+														</div>
+                            <hr class="opacity-10 my-4">
+                            
+							<h5 class="fw-bold text-dark mb-3" style="font-family: 'Georgia', serif;">Seguridad/Cambio de contraseña</h5>
+							<div class="row g-3 mb-4">
+							    <div class="col-md-6">
+							        <label class="form-label small text-muted">Ingrese su contraseña actual</label>
+							        <input type="password" name="passwordActual" class="form-control p-2 bg-light border-light" placeholder="********" style="border-radius: 8px;">
+							    </div>
+							    <div class="col-md-6">
+							        <label class="form-label small text-muted">Nueva Contraseña</label>
+							        <input type="password" name="passwordNueva" class="form-control p-2 bg-light border-light" placeholder="********" style="border-radius: 8px;">
+							    </div>
+							</div>
+
+                            <div class="text-end">
+                                <button type="submit" class="btn text-white fw-bold px-4 py-2" style="background-color: #c86b66; border-radius: 8px;">
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalRenovacion" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow" style="border-radius: 12px; border: none;">
+                <div class="modal-header border-light">
+                    <h5 class="modal-title fw-bold text-dark" style="font-family: 'Georgia', serif;">Renovar Préstamo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/prestamos/renovar}" method="POST">
+                    <div class="modal-body">
+                        <p class="text-muted small mb-3">Conforme a las políticas de la biblioteca, selecciona la nueva fecha límite de devolución para el ejemplar.</p>
+                        <input type="hidden" id="modalPrestamoId" name="prestamoId" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Seleccione la Nueva Fecha de Devolución</label>
+                            <input type="date" class="form-control border-light bg-light p-2" name="nuevaFecha" required style="border-radius: 8px;">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-light">
+                        <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal" style="border-radius: 8px;">Cancelar</button>
+                        <button type="submit" class="btn btn-sm text-white fw-bold px-4" style="background-color: #c86b66; border-radius: 8px;">Confirmar Renovación</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{componentes/componente :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/funciones.js"></script>
+</body>
+</html>

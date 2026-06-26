@@ -1,0 +1,364 @@
+/* Paleta de colores basada en el wireframe */
+:root {
+    --bg-cream: #f4eee1;
+    --brand-coral: #c86b66;
+    --brand-dark: #2c3e50;
+}
+
+body {
+    background-color: #fbfbfc;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.bg-cream {
+    background-color: var(--bg-cream) !important;
+}
+
+.brand-title {
+    color: #8c3f3b;
+}
+
+.btn-search {
+    background-color: var(--brand-coral);
+    color: white;
+}
+.btn-search:hover {
+    background-color: #b35652;
+    color: white;
+}
+
+.book-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.book-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1) !important;
+}
+
+.book-img {
+    height: 200px;
+    object-fit: cover;
+    max-width: 100%;
+}
+
+.text-coral {
+    color: var(--brand-coral) !important;
+}
+
+.btn-add-cart {
+    background-color: var(--brand-coral);
+    color: white;
+    border: none;
+}
+.btn-add-cart:hover {
+    background-color: #b35652;
+    color: white;
+}
+.text-hover-coral:hover {
+    color: #c86b66 !important;
+    transition: color 0.2s ease-in-out;
+}
+
+/* Estilos para las pantallas de Accesos (Login / Registro) */
+.bg-libreria-accesos {
+    background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+}
+
+.card-acceso {
+    max-width: 440px; 
+    width: 100%; 
+    border-radius: 16px;
+    background-color: #ffffff;
+}
+
+.nav-tabs-accesos .nav-link {
+    color: #6c757d;
+    border: none;
+    background: transparent;
+}
+
+.nav-tabs-accesos .nav-link.active {
+    color: #c86b66 !important;
+    border-bottom: 2px solid #c86b66 !important;
+    font-weight: bold;
+}
+
+.btn-acceso-submit {
+    background-color: #c86b66;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-acceso-submit:hover {
+    background-color: #8c3f3b;
+}
+
+.txt-terminos-legal {
+    font-size: 0.72rem; 
+    color: #888888;
+}
+
+/* Pantalla de Detalle del Libro */
+.bg-alejandria-page {
+    background-color: #fcfaf2;
+}
+
+.img-portada-detalle {
+    max-height: 480px; 
+    object-fit: cover;
+}
+
+.font-editorial-titulo {
+    color: #333333; 
+    font-family: 'Georgia', serif;
+}
+
+.box-precio-venta {
+    background-color: #f4eee1;
+    color: #333333;
+}
+
+.box-precio-alquiler {
+    background-color: #f4eee1;
+    color: #c86b66;
+}
+
+.box-precio-alquiler .title-alquiler {
+    color: #c86b66 !important;
+}
+
+.btn-add-cart-detalle {
+    background-color: #c86b66; 
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-add-cart-detalle:hover {
+    background-color: #8c3f3b;
+}
+
+.avatar-resena {
+    background-color: #f4eee1;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Pantalla de Checkout / Finalizar Compra */
+.bg-coral-ale {
+    background-color: #c86b66;
+    color: #ffffff;
+}
+
+.container-option-select {
+    cursor: pointer;
+    background-color: #ffffff;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.container-option-select:hover {
+    background-color: #faf9f5;
+}
+
+.img-mini-checkout {
+    width: 50px;
+    height: 70px;
+    object-fit: cover;
+}
+
+.btn-check:checked + .btn-outline-secondary {
+    background-color: #c86b66;
+    border-color: #c86b66;
+    color: #ffffff;
+}
+.btn-checkout-proceder {
+    background-color: #c86b66 !important; 
+    color: #ffffff !important;            
+    border-radius: 12px;                  
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-checkout-proceder:hover {
+    background-color: #8c3f3b !important; 
+    transform: translateY(-1px);          
+}
+
+/* Estilo para el enlace de retroceso */
+.btn-volver-catalogo {
+    color: #6c757d !important; /* Gris oscuro visible */
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.15s ease-in-out;
+}
+
+.btn-volver-catalogo:hover {
+    color: #c86b66 !important; /* Cambia a tu color coral cuando pasas el mouse */
+}
+
+
+
+
+
+
+
+/* ==========================================================================
+   MÓDULO: MI PERFIL (LIBRERÍA DE ALEJANDRIA)
+   ========================================================================== */
+.sidebar-menu .list-group-item.active {
+    background-color: #c86b66 !important;
+    border-color: #c86b66 !important;
+}
+
+.sidebar-menu .list-group-item {
+    color: #495057;
+    font-weight: 500;
+}
+
+.profile-header-card {
+    background-color: #f8f9fa;
+    border-left: 5px solid #c86b66;
+}
+
+.nav-tab-content {
+    display: none;
+}
+
+.nav-tab-content.active {
+    display: block;
+}
+
+/* ==========================================================================
+   LÍNEA DE TIEMPO (DETALLE DE PEDIDO)
+   ========================================================================== */
+.timeline-container {
+    border-left: 2px solid #e9ecef;
+    margin-left: 10px;
+}
+.timeline-item:last-child {
+    padding-bottom: 0 !important;
+}
+.timeline-item:last-child::before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    bottom: 0;
+    width: 6px;
+    height: 100%;
+    background-color: white; /* Oculta la línea sobrante del último item */
+}
+
+/* Estilos para el modal de votación por estrellas */
+.estrella-voto {
+    color: #decbba;
+    transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.estrella-voto.hovered,
+.estrella-voto.selected {
+    color: #ffc107 !important;
+}
+
+.estrella-voto:active {
+    transform: scale(1.2);
+}
+
+/* Estandarización de portadas en el catálogo */
+.img-portada-catalogo {
+    height: 210px;
+    object-fit: contain; /* Evita que la portada se estire o se corte bruscamente */
+    background-color: #f8fafc; /* Le da un fondo limpio si la imagen es angosta */
+    padding: 4px;
+}
+
+/* Estilos para la Vista de Sucursales */
+.card-sucursal {
+    border-radius: 16px !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-sucursal:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08) !important;
+}
+
+.img-sucursal {
+    height: 220px;
+    object-fit: cover;
+}
+
+.text-info {
+    color: #4da1a9 !important; /* Tono celeste/cyan suave que tienes en tus iconos */
+}
+
+.btn-maps-sucursal {
+    background-color: #e3fafc;
+    color: #0b7285;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-maps-sucursal:hover {
+    background-color: #c5f6fa;
+    color: #0c8599;
+}
+
+/* Estilos para la Vista de Reglamento General */
+.banner-reglamento {
+    background-color: #4a5568; /* Tono pizarra oscuro de la captura original */
+}
+
+.container-reglamento-card {
+    border-radius: 16px !important;
+    max-width: 900px;
+}
+
+/* Círculos numéricos color terracota de tu paleta */
+.badge-numero {
+    background-color: #c86b66;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+/* Diseño refinado para la tabla de sanciones */
+.custom-table-reglamento {
+    border-color: #e2e8f0 !important;
+}
+.custom-table-reglamento thead th {
+    background-color: #f8fafc !important;
+    border-bottom: 2px solid #cbd5e1 !important;
+}
+/* Nuevo Banner Premium de Reglamento */
+.banner-reglamento {
+    /* Un degradado lineal que va de un pizarra oscuro a un tono un poco más profundo */
+    background: linear-gradient(135deg, #3a4454 0%, #2a323d 100%) !important;
+    border-bottom: 4px solid #8c3f3b; /* Línea base terracota */
+    overflow: hidden;
+}
+
+/* Efecto de luz suave para el título principal */
+.text-glow {
+    text-shadow: 0 2px 10px rgba(253, 251, 247, 0.15);
+}
+
+/* Textura sutil geométrica de fondo opcional (Toque de diseño) */
+.bg-grid-overlay {
+    background-image: linear-gradient(currentColor 1px, transparent 1px), linear-gradient(to right, currentColor 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: #ffffff;
+}
+
+/* Ajuste fino para mejorar el tracking (espaciado entre letras) */
+.tracking-wider {
+    letter-spacing: 2px !important;
+    line-height: 1.6;
+}

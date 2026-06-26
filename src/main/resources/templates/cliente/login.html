@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librería de Alejandría - Accesos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+
+    <div class="container-fluid min-vh-100 p-0">
+        <div class="row g-0 min-vh-100">
+            
+            <div class="col-md-6 d-none d-md-block bg-libreria-accesos"></div>
+            
+            <div class="col-md-6 d-flex align-items-center justify-content-center py-4" style="background-color: #f8fafc;">
+                <div class="card border-0 shadow-lg p-4 m-3 card-acceso">
+                    
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold text-dark-ale" style="color: #8c3f3b; font-family: 'Georgia', serif;">Librería de Alejandría</h3>
+                        <p class="text-muted small">Bienvenido a nuestra comunidad lectora</p>
+                    </div>
+
+                    <ul class="nav nav-tabs justify-content-center mb-4 border-0 gap-3 nav-tabs-accesos" id="accessTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-panel" type="button" role="tab" aria-controls="login-panel" aria-selected="true">
+                                Iniciar Sesión
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-panel" type="button" role="tab" aria-controls="register-panel" aria-selected="false">
+                                Crear Cuenta
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div th:if="${param.error}" class="alert alert-danger py-2 small text-center alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Correo o contraseña incorrectos, o la cuenta no existe.
+                        <button type="button" class="btn-close" style="padding: 0.8rem;" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <div th:if="${param.registroExitoso}" class="alert alert-success py-2 small text-center alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-1"></i> ¡Cuenta creada con éxito! Ahora puedes iniciar sesión.
+                        <button type="button" class="btn-close" style="padding: 0.8rem;" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <div th:if="${param.errorRegistro}" class="alert alert-warning py-2 small text-center alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-circle-fill me-1"></i> Ese correo ya está registrado. Intenta iniciar sesión.
+                        <button type="button" class="btn-close" style="padding: 0.8rem;" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <div class="tab-content" id="accessTabsContent">
+                        
+                        <div class="tab-pane fade show active" id="login-panel" role="tabpanel" aria-labelledby="login-tab">
+                            <form th:action="@{/login}" method="POST">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label small fw-bold text-dark">Correo Electrónico</label>
+                                    <input type="email" id="username" name="username" class="form-control form-control-sm bg-light" required>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label for="password" class="form-label small fw-bold text-dark">Contraseña</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="password" id="password" name="password" class="form-control bg-light" placeholder="••••••••" required>
+                                        <span class="input-group-text bg-light text-muted togglePasswordClass" style="cursor: pointer;"><i class="bi bi-eye"></i></span>
+                                    </div>
+                                </div>
+
+                                <div class="text-end mb-4">
+                                    <a href="#" class="text-decoration-none text-muted small" style="font-size: 0.8rem;">¿Olvidaste tu contraseña?</a>
+                                </div>
+
+                                <button type="submit" class="btn text-white fw-bold w-100 py-2 shadow-sm mb-3 btn-acceso-submit">
+                                    Iniciar Sesión
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane fade" id="register-panel" role="tabpanel" aria-labelledby="register-tab">
+                            <form th:action="@{/registro}" method="POST">
+                                
+                                <div class="mb-3">
+                                    <label for="nombreRazonSocial" class="form-label small fw-bold text-dark">Nombre Completo</label>
+                                    <input type="text" id="nombreRazonSocial" name="nombreRazonSocial" class="form-control form-control-sm bg-light" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="tipoDocumento" class="form-label small fw-bold text-dark">Tipo de Documento</label>
+                                    <select id="tipoDocumento" name="tipoDocumento" class="form-select form-select-sm bg-light" required>
+                                        <option value="DNI">DNI</option>
+                                        <option value="RUC">RUC</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="numeroDocumento" class="form-label small fw-bold text-dark">Número de Documento</label>
+                                    <input type="text" id="numeroDocumento" name="nroDocumento" class="form-control form-control-sm bg-light" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label small fw-bold text-dark">Correo Electrónico</label>
+                                    <input type="email" id="email" name="email" class="form-control form-control-sm bg-light" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="reg-password" class="form-label small fw-bold text-dark">Contraseña</label>
+                                    <input type="password" id="reg-password" name="password" class="form-control form-control-sm bg-light" placeholder="••••••••" required>
+                                </div>
+
+                                <button type="submit" class="btn text-white fw-bold w-100 py-2 shadow-sm mb-3 btn-acceso-submit">
+                                    Registrarse
+                                </button>
+                            </form>
+                        </div>
+                        
+                    </div>
+
+                    <div class="text-center mt-2 txt-terminos-legal">
+                        Al interactuar en esta sección, aceptas nuestros <a href="#" class="text-danger text-decoration-none">Términos de Servicio</a> y <a href="#" class="text-danger text-decoration-none">Política de Privacidad</a>.
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/funciones.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librería de Alejandría - Términos y Condiciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body class="bg-alejandria-page">
+
+    <div th:replace="~{componentes/componente :: navbar}"></div>
+
+    <!-- BANNER PRINCIPAL STYLISH -->
+    <div class="banner-reglamento text-white text-center py-5 position-relative shadow-sm">
+        <div class="container py-3 position-relative z-1">
+            <h1 class="fw-bold display-5 mb-2 text-glow" style="font-family: 'Georgia', serif; color: #fdfbf7;">Términos y Condiciones</h1>
+            <div class="mx-auto my-3" style="width: 60px; height: 3px; background-color: #c86b66; border-radius: 2px;"></div>
+            <p class="mx-auto text-white-50 text-uppercase fw-semibold tracking-wider" style="font-size: 0.75rem; letter-spacing: 2px;">Regulaciones de uso de nuestra plataforma digital y tienda física</p>
+        </div>
+        <div class="position-absolute top-0 start-0 w-100 height-100 opacity-10 bg-grid-overlay"></div>
+    </div>
+
+    <main class="container my-5" style="max-width: 1100px;">
+        <div class="mb-4">
+            <a href="/catalogo" class="text-decoration-none text-muted small"><i class="bi bi-chevron-left me-1"></i>Volver al catálogo</a>
+        </div>
+
+        <!-- SECCIÓN DESTACADA: MARCO LEGAL -->
+        <div class="card border-0 shadow-sm p-4 p-md-5 bg-white mb-4" style="border-radius: 16px;">
+            <div class="text-center mb-4">
+                <span class="text-uppercase fw-bold small" style="color: #c86b66; letter-spacing: 1px;">Acuerdo de Uso Legal</span>
+                <h3 class="fw-bold text-dark mt-1" style="font-family: 'Georgia', serif;">Condiciones Generales</h3>
+                <p class="text-muted small mx-auto mb-0" style="max-width: 700px;">
+                    El acceso y uso de esta plataforma atribuye la condición de usuario e implica la aceptación total de las cláusulas operativas dispuestas por la organización para la protección del consumidor.
+                </p>
+            </div>
+
+            <!-- GRID TRIPLE DE CLÁUSULAS REORGANIZADAS -->
+            <div class="row g-4 mt-2">
+                <div class="col-md-4">
+                    <div class="p-4 rounded-4 bg-light h-100 border-top border-4" style="border-top-color: #c86b66 !important;">
+                        <h6 class="fw-bold text-dark mb-2"><i class="bi bi-shield-lock-fill text-secondary me-2"></i>1. Propiedad Intelectual</h6>
+                        <p class="text-muted small lh-base m-0">Todo el contenido disponible en este sitio, incluyendo textos, gráficos, logotipos, portadas de libros y códigos fuente, son propiedad exclusiva de la Librería de Alejandría S.A.C o de sus respectivos autores legítimos incorporados en el catálogo corporativo.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 rounded-4 bg-light h-100 border-top border-4" style="border-top-color: #3a4454 !important;">
+                        <h6 class="fw-bold text-dark mb-2"><i class="bi bi-person-badge-fill text-secondary me-2"></i>2. Registro de Cuentas</h6>
+                        <p class="text-muted small lh-base m-0">Al registrarse bajo el rol de Cliente Web, el usuario es responsable de mantener la confidencialidad de sus credenciales de acceso. El sistema almacena la contraseña de forma estrictamente encriptada para salvaguardar su privacidad.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 rounded-4 bg-light h-100 border-top border-4" style="border-top-color: #4da1a9 !important;">
+                        <h6 class="fw-bold text-dark mb-2"><i class="bi bi-exclamation-triangle-fill text-secondary me-2"></i>3. Responsabilidad</h6>
+                        <p class="text-muted small lh-base m-0">La empresa se reserva el derecho de actualizar precios, disponibilidad de stock o deshabilitar temporalmente el acceso por mantenimiento del servidor sin previo aviso, garantizando siempre el respeto a los pedidos previamente pagados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{componentes/componente :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alejandría Almacén - Stock General</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/almacen.css}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-sbs py-0 mb-4">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand py-3" href="#">Biblioteca Alejandría</a>
+            <ul class="nav nav-tabs mx-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/almacen/movimientos}">Movimientos</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/almacen/stock}">Stock General</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/almacen/alertar}">Alertas</a></li>
+            </ul>
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end d-none d-md-block">
+                    <div class="fw-bold text-dark mb-0" style="font-size: 0.85rem;">
+                        <i class="bi bi-person-circle me-1 text-muted"></i> 
+                        <span sec:authentication="name">usuario@correo.com</span>
+                    </div>
+                    <div class="text-muted" style="font-size: 0.75rem;">Almacén</div>
+                </div>
+                
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-semibold">
+                        <i class="bi bi-box-arrow-right"></i> Salir
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-2">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2 class="fw-semibold mb-1">Stock General</h2>
+                <p class="text-muted small mb-0">Inventario consolidado de la librería.</p>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <div class="input-group" style="width: 300px;">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" placeholder="Buscar por ISBN o título..." id="buscadorStock">
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-responsive table-custom shadow-sm bg-white rounded-3">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light text-muted" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                    <tr>
+                        <th class="ps-4">LIBRO</th>
+                        <th>EDITORIAL</th>
+                        <th>ISBN</th>
+                        <th>PRECIO (S/)</th>
+                        <th class="text-center">DISPONIBLE</th>
+                        <th class="text-center">ESTADO</th>
+                        <th class="text-center pe-4">CATÁLOGO</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaStock">
+                    
+                    <tr th:if="${#lists.isEmpty(listaStock)}">
+                        <td colspan="7" class="text-center text-muted py-5">
+                            <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
+                            El inventario está vacío.
+                        </td>
+                    </tr>
+
+                    <tr th:each="item : ${listaStock}">
+                        <td class="ps-4 py-3">
+                            <div class="fw-semibold text-dark" th:text="${item.titulo}">Título del Libro</div>
+                            <small class="text-muted" th:text="${item.slug}">/slug</small>
+                        </td>
+                        
+                        <td class="text-secondary small fw-medium" th:text="${item.editorial}">Editorial</td>
+
+                        <td class="font-monospace text-secondary" style="font-size: 0.9rem;" th:text="${item.isbn}">ISBN</td>
+                        
+                        <td class="fw-bold text-dark" th:text="${item.precio}">0.00</td>
+                        
+                        <td class="text-center">
+                            <span class="fs-5 fw-bold font-monospace" th:text="${item.cantidadDisponible}">0</span>
+                        </td>
+
+                        <td class="text-center">
+                            <span th:if="${item.estadoStock == 'ALTO'}" class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-2 w-75">Alto</span>
+                            <span th:if="${item.estadoStock == 'SUFICIENTE'}" class="badge bg-primary bg-opacity-10 text-primary border border-primary rounded-pill px-3 py-2 w-75">Suficiente</span>
+                            <span th:if="${item.estadoStock == 'BAJO'}" class="badge bg-warning bg-opacity-10 text-warning border border-warning rounded-pill px-3 py-2 w-75">Bajo Stock</span>
+                            <span th:if="${item.estadoStock == 'AGOTADO'}" class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-3 py-2 w-75">Agotado</span>
+                        </td>
+                        
+                        <td class="text-center pe-4">
+                            <i th:if="${item.activoCatalogo}" class="bi bi-check-circle-fill text-success fs-5" title="Visible en la tienda"></i>
+                            <i th:unless="${item.activoCatalogo}" class="bi bi-eye-slash-fill text-muted fs-5" title="Oculto de la tienda"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.getElementById('buscadorStock').addEventListener('keyup', function() {
+            let filtro = this.value.toLowerCase();
+            let filas = document.getElementById('tablaStock').getElementsByTagName('tr');
+            
+            for (let i = 0; i < filas.length; i++) {
+                let textoFila = filas[i].textContent || filas[i].innerText;
+                if (textoFila.toLowerCase().indexOf(filtro) > -1) {
+                    filas[i].style.display = "";
+                } else {
+                    filas[i].style.display = "none";
+                }
+            }
+        });
+    </script>
+</body>
+</html>

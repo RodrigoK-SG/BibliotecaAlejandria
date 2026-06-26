@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alejandría Admin - Usuarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/admin-usuarios.css}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-admin py-0 mb-4">
+        <div class="container-fluid px-5">
+            <a class="navbar-brand py-3" href="#">Biblioteca Alejandría</a>
+            <ul class="nav nav-tabs mx-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin}">Catálogo de Libros</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/admin/usuarios}">Gestión de Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/sucursales}">Sucursales</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/reportes}">Reportes</a></li>
+            </ul>
+            <div class="d-flex align-items-center gap-3">
+                
+                <div class="text-end lh-sm" th:if="${usuarioLogueado != null}">
+                    <div class="fw-bold fs-6" th:text="${usuarioLogueado.nombreCompleto}">Nombre Usuario</div>
+                    <small class="text-muted" style="font-size: 0.75rem;" 
+                           th:text="${!usuarioLogueado.roles.isEmpty() ? usuarioLogueado.roles[0].nombre : 'SIN ROL'} + ' | Sede Central'">
+                        Rol | Sede Central
+                    </small>
+                </div>
+                
+                <div class="bg-white rounded-circle d-flex align-items-center justify-content-center border" style="width: 40px; height: 40px;">
+                    <i class="bi bi-person text-secondary"></i>
+                </div>
+                <a href="/logout" class="text-danger text-decoration-none ms-3 small fw-medium">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-5 pb-5">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Control de Personal y Accesos</h2>
+                <p class="text-muted small mb-0">Administra los usuarios del sistema y sus roles.</p>
+            </div>
+            <button class="btn btn-maroon rounded-pill px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalNuevoUsuario">
+                <i class="bi bi-plus-lg me-1"></i> Nuevo Usuario
+            </button>
+        </div>
+
+        <div th:if="${exito}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i><span th:text="${exito}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-borderless align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>NOMBRE COMPLETO</th>
+                            <th>EMAIL</th>
+                            <th>ROL DEL SISTEMA</th>
+                            <th>FECHA DE REGISTRO</th>
+                            <th>ESTADO</th>
+                            <th class="text-end">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="usuario : ${usuarios}">
+                            <td class="fw-bold text-dark" th:text="${usuario.nombreCompleto}">Nombre</td>
+                            <td th:text="${usuario.email}">email</td>
+                            <td class="text-muted fw-bold" th:text="${!usuario.roles.isEmpty() ? usuario.roles[0].nombre : 'SIN ROL'}">ROL</td>
+                            <td th:text="${#temporals.format(usuario.creadoEn, 'dd MMM yyyy')}">12 May 2026</td>
+                            <td>
+                                <span th:class="${usuario.activo} ? 'badge-activo' : 'badge bg-danger bg-opacity-10 text-danger border border-danger px-2 py-1 rounded'" 
+                                      th:text="${usuario.activo} ? 'ACTIVO' : 'INACTIVO'">ESTADO</span>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn-action" data-bs-toggle="modal" data-bs-target="#modalEditarUsuario"
+                                        th:data-id="${usuario.id}" 
+                                        th:data-nombre="${usuario.nombreCompleto}" 
+                                        th:data-email="${usuario.email}" 
+                                        th:data-rol="${!usuario.roles.isEmpty() ? usuario.roles[0].nombre : ''}" 
+                                        th:data-activo="${usuario.activo}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button th:if="${usuario.activo}" class="btn-action text-danger" data-bs-toggle="modal" data-bs-target="#modalDesactivarUsuario"
+                                        th:data-id="${usuario.id}" th:data-nombre="${usuario.nombreCompleto}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(usuarios)}">
+                            <td colspan="6" class="text-center text-muted py-4">No hay usuarios registrados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <div class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center pb-0 border-0">
+                    <div class="modal-user-icon"><i class="bi bi-people"></i></div>
+                    <div>
+                        <h5 class="fw-bold mb-0">Registrar Nuevo Usuario</h5>
+                        <p class="text-muted small mb-0">Complete los datos para crear el acceso al sistema</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto align-self-start mt-1" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/admin/usuarios/nuevo}" method="post">
+                    <div class="modal-body pt-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">NOMBRE COMPLETO</label>
+                                <input type="text" name="nombreCompleto" class="form-control" placeholder="Ej: Juan Pérez" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">CONTRASEÑA PROVISIONAL</label>
+                                <input type="password" name="password" class="form-control" placeholder="********" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">CORREO ELECTRÓNICO</label>
+                                <input type="email" name="email" class="form-control" placeholder="usuario@tienda.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">ASIGNAR ROL</label>
+                                <select name="rol" class="form-select" required>
+                                    <option value="" disabled selected>Seleccione un rol...</option>
+                                    <option value="ADMINISTRADOR">Administrador</option>
+                                    <option value="VENDEDOR">Vendedor</option>
+                                    <option value="BIBLIOTECARIO">Bibliotecario</option>
+                                    <option value="ALMACENERO">Almacenero</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="switch-container mt-4">
+                            <div>
+                                <h6 class="fw-bold mb-0">Estado de Acceso</h6>
+                                <small class="text-muted">El usuario podrá iniciar sesión inmediatamente</small>
+                            </div>
+                            <div class="form-check form-switch d-flex align-items-center gap-2 mb-0">
+                                <input class="form-check-input m-0" type="checkbox" role="switch" name="activo" id="nuevoSwitchEstado" checked>
+                                <span id="nuevoLabelEstado" class="fw-bold text-success mb-0" style="min-width: 60px;">ACTIVO</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center gap-2 border-0 pt-0">
+                        <button type="button" class="btn btn-light border px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-maroon px-4 rounded-pill"><i class="bi bi-check-circle me-1"></i> Guardar Usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center pb-0 border-0">
+                    <div class="modal-user-icon"><i class="bi bi-person-gear"></i></div>
+                    <div>
+                        <h5 class="fw-bold mb-0">Editar Perfil de Usuario</h5>
+                        <p class="text-muted small mb-0">Modifica los datos y permisos del usuario</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto align-self-start mt-1" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/admin/usuarios/editar}" method="post">
+                    <input type="hidden" name="id" id="editId">
+
+                    <div class="modal-body pt-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">NOMBRE COMPLETO</label>
+                                <input type="text" name="nombreCompleto" id="editNombre" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">NUEVA CONTRASEÑA</label>
+                                <input type="password" name="password" class="form-control" placeholder="Dejar en blanco para mantener la actual">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">CORREO ELECTRÓNICO</label>
+                                <input type="email" name="email" id="editEmail" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">ROL</label>
+                                <select name="rol" id="editRol" class="form-select" required>
+                                    <option value="ADMINISTRADOR">Administrador</option>
+                                    <option value="VENDEDOR">Vendedor</option>
+                                    <option value="BIBLIOTECARIO">Bibliotecario</option>
+                                    <option value="ALMACENERO">Almacenero</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="switch-container mt-4">
+                            <div>
+                                <h6 class="fw-bold mb-0">Estado del Usuario</h6>
+                                <small class="text-muted">El usuario puede iniciar sesión en el sistema</small>
+                            </div>
+                            <div class="form-check form-switch d-flex align-items-center gap-2 mb-0">
+                                <input class="form-check-input m-0" type="checkbox" role="switch" name="activo" id="editSwitchEstado">
+                                <span id="editLabelEstado" class="fw-bold text-success mb-0" style="min-width: 60px;">ACTIVO</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center gap-2 border-0 pt-0">
+                        <button type="button" class="btn btn-light border px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-maroon px-4 rounded-pill"><i class="bi bi-check-circle me-1"></i> Actualizar Perfil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalDesactivarUsuario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <form th:action="@{/admin/usuarios/desactivar}" method="post">
+                    <input type="hidden" name="id" id="deleteId">
+                    
+                    <div class="modal-body p-0 mb-4">
+                        <div class="mx-auto bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                            <i class="bi bi-person-x"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">¿Desactivar este usuario?</h4>
+                        <p class="text-muted mb-0">Estás a punto de revocar el acceso de <strong id="deleteNombre" class="text-dark"></strong>.</p>
+                        <p class="text-muted small">No se eliminará de la base de datos para preservar el historial de acciones.</p>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-light border px-4 py-2 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger px-4 py-2 rounded-pill">Desactivar Usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/admin-usuarios.js}"></script>
+
+</body>
+</html>

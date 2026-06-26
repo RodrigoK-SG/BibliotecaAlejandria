@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librería de Alejandría - Políticas de Envío</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body class="bg-alejandria-page">
+
+    <div th:replace="~{componentes/componente :: navbar}"></div>
+
+    <!-- BANNER PRINCIPAL STYLISH -->
+    <div class="banner-reglamento text-white text-center py-5 position-relative shadow-sm">
+        <div class="container py-3 position-relative z-1">
+            <h1 class="fw-bold display-5 mb-2 text-glow" style="font-family: 'Georgia', serif; color: #fdfbf7;">Políticas de Envío</h1>
+            <div class="mx-auto my-3" style="width: 60px; height: 3px; background-color: #c86b66; border-radius: 2px;"></div>
+            <p class="mx-auto text-white-50 text-uppercase fw-semibold tracking-wider" style="font-size: 0.75rem; letter-spacing: 2px;">Horarios, coberturas y modalidades de entrega de pedidos</p>
+        </div>
+        <div class="position-absolute top-0 start-0 w-100 height-100 opacity-10 bg-grid-overlay"></div>
+    </div>
+
+    <main class="container my-5" style="max-width: 950px;">
+        <div class="mb-4">
+            <a href="/catalogo" class="text-decoration-none text-muted small"><i class="bi bi-chevron-left me-1"></i>Volver al catálogo</a>
+        </div>
+
+        <!-- TARJETA HORIZONTAL MODALIDAD 1: RECOJO -->
+        <div class="card border-0 shadow-sm p-4 bg-white mb-4 position-relative overflow-hidden" style="border-radius: 16px;">
+            <div class="row align-items-center">
+                <div class="col-md-2 text-center text-md-start mb-3 mb-md-0">
+                    <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px; background-color: #fcefe2; color: #c86b66;">
+                        <i class="bi bi-shop fs-2"></i>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <h5 class="fw-bold text-dark mb-1" style="font-family: 'Georgia', serif;">Recojo en Tienda Directo</h5>
+                    <span class="badge bg-success mb-2 small" style="font-size: 0.7rem; padding: 4px 8px;">Disponible</span>
+                    <p class="text-muted small lh-base m-0">La modalidad es completamente gratuita. El usuario podrá acercarse a la Sede Central o Sucursal Norte seleccionada durante el proceso de compra dentro de los horarios de atención vigentes detallados en nuestro portal.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETA HORIZONTAL MODALIDAD 2: DELIVERY -->
+        <div class="card border-0 shadow-sm p-4 bg-white mb-4 position-relative overflow-hidden" style="border-radius: 16px;">
+            <div class="row align-items-center">
+                <div class="col-md-2 text-center text-md-start mb-3 mb-md-0">
+                    <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px; background-color: #e2e8f0; color: #3a4454;">
+                        <i class="bi bi-truck fs-2"></i>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <h5 class="fw-bold text-dark mb-1" style="font-family: 'Georgia', serif;">Delivery a Domicilio Express</h5>
+                    <span class="badge bg-secondary mb-2 small" style="background-color: #3a4454 !important; font-size: 0.7rem; padding: 4px 8px;">S/ 5.99 Fijo</span>
+                    <p class="text-muted small lh-base m-0">Los despachos online a domicilio tienen una tarifa estándar fija de S/ 5.99 para Lima Metropolitana, procesándose en un rango estimado de 24 a 48 horas hábiles posteriores a la validación del pago.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETA HORIZONTAL MODALIDAD 3: TRACKING -->
+        <div class="card border-0 shadow-sm p-4 bg-white position-relative overflow-hidden" style="border-radius: 16px;">
+            <div class="row align-items-center">
+                <div class="col-md-2 text-center text-md-start mb-3 mb-md-0">
+                    <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px; background-color: #e3fafc; color: #0b7285;">
+                        <i class="bi bi-geo-alt-fill fs-2"></i>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <h5 class="fw-bold text-dark mb-1" style="font-family: 'Georgia', serif;">Seguimiento Automatizado</h5>
+                    <span class="badge bg-info text-white mb-2 small" style="background-color: #4da1a9 !important; font-size: 0.7rem; padding: 4px 8px;">Notificaciones</span>
+                    <p class="text-muted small lh-base m-0">Una vez que el paquete es asignado al transportista, se registrará un "Número de Tracking" en el panel de usuario del cliente y se enviará una alerta automática por correo electrónico para que se pueda realizar el seguimiento correspondiente.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{componentes/componente :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

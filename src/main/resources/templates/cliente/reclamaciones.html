@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librería de Alejandría - Libro de Reclamaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body class="bg-alejandria-page">
+
+    <!-- NAVBAR COMPONENTE -->
+    <div th:replace="~{componentes/componente :: navbar}"></div>
+
+    <!-- BANNER PREMIUM DE RECLAMACIONES (Mismo estilo que reglamento, términos y políticas) -->
+    <div class="banner-reglamento text-white text-center py-5 position-relative shadow-sm">
+        <div class="container py-3 position-relative z-1">
+            <h1 class="fw-bold display-5 mb-2 text-glow" style="font-family: 'Georgia', serif; color: #fdfbf7;">
+                Libro de Reclamaciones
+            </h1>
+            
+            <div class="mx-auto my-3" style="width: 60px; height: 3px; background-color: #c86b66; border-radius: 2px;"></div>
+            
+            <p class="mx-auto text-white-50 text-uppercase fw-semibold tracking-wider mb-2" style="font-size: 0.75rem; letter-spacing: 2px; max-width: 750px;">
+                Conforme a lo establecido en el Código de Protección y Defensa del Consumidor, esta institución cuenta con un Libro de Reclamaciones a su disposición[cite: 2].
+            </p>
+            <span class="text-uppercase text-white opacity-50 fw-medium" style="font-size: 0.65rem; letter-spacing: 1px;">
+                Librería de Alejandría S.A.C - RUC: 20123456789 | Sede Central: Av. Lima 123, Lima Metropolitana[cite: 2]
+            </span>
+        </div>
+        <div class="position-absolute top-0 start-0 w-100 height-100 opacity-10 bg-grid-overlay"></div>
+    </div>
+
+    <main class="container my-5" style="max-width: 950px;">
+        
+        <!-- Botón Volver -->
+        <div class="mb-4">
+            <a href="/catalogo" class="text-decoration-none text-muted small">
+                <i class="bi bi-chevron-left me-1"></i>Volver al catálogo
+            </a>
+        </div>
+        
+        <!-- Formulario Principal -->
+        <div class="card border-0 shadow-sm p-4 p-md-5 bg-white" style="border-radius: 16px;">
+            <form th:action="@{/catalogo/reclamaciones/enviar}" method="POST">
+                
+                <!-- SECCIÓN 1: Datos Personales -->
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-4" style="font-size: 1.1rem;">Datos personales</h5>
+                
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label text-secondary small fw-bold">E-mail</label>
+                        <input type="email" name="email" class="form-control bg-light" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-secondary small fw-bold">Nombres</label>
+                        <input type="text" name="nombres" class="form-control bg-light" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-secondary small fw-bold">Apellidos</label>
+                        <input type="text" name="apellidos" class="form-control bg-light" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-secondary small fw-bold">Tipo de documento</label>
+                        <select name="tipoDocumento" class="form-select bg-light" required>
+                            <option value="DNI">DNI</option>
+                            <option value="RUC">RUC</option>
+                            <option value="CE">Carnet de Extranjería</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small fw-bold">Número de documento</label>
+                        <input type="text" name="numeroDocumento" class="form-control bg-light" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small fw-bold">Razón Social <span class="text-muted fw-normal">(Opcional)</span></label>
+                        <input type="text" name="razonSocial" class="form-control bg-light">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small fw-bold">Celular o teléfono</label>
+                        <input type="tel" name="telefono" class="form-control bg-light" required>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small fw-bold">Departamento</label>
+                        <select name="departamento" class="form-select bg-light" required>
+                            <option value="LIMA">Lima</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small fw-bold">Provincia</label>
+                        <select name="provincia" class="form-select bg-light" required>
+                            <option value="LIMA">Lima</option>
+                            <option value="CALLAO">Callao</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small fw-bold">Distrito</label>
+                        <select name="distrito" class="form-select bg-light" required>
+                            <option value="ANCON">Ancón</option>
+                            <option value="VENTANILLA">Ventanilla</option>
+                            <option value="LIMA">Lima Cercado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <label class="form-label text-secondary small fw-bold">Dirección</label>
+                    <input type="text" name="direccion" class="form-control bg-light" required>
+                </div>
+
+
+                <!-- SECCIÓN 2: Detalle del Reclamo -->
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-4" style="font-size: 1.1rem;">Detalle del reclamo</h5>
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-bold">Elija la tienda</label>
+                    <select name="sucursalId" class="form-select bg-light" required>
+                        <option value="1">Sede Central - Av. Lima 123</option>
+                        <option value="2">Sucursal Norte - Av. Norte 456</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-bold">Dirección de la tienda</label>
+                    <input type="text" class="form-control bg-light text-muted" value="Av. Lima 123, Lima Metropolitana" readonly>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small fw-bold">Tipo de reclamo</label>
+                        <select name="tipoReclamo" class="form-select bg-light" required>
+                            <option value="RECLAMO">Reclamo (Disconformidad con el producto)</option>
+                            <option value="QUEJA">Queja (Malestar directo en la atención)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small fw-bold">Identificación del bien contratado</label>
+                        <select name="bienContratado" class="form-select bg-light" required>
+                            <option value="PRODUCTO">Producto (Libros, Revistas, Comic)</option>
+                            <option value="SERVICIO">Servicio (Membresía, Alquiler de biblioteca)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small fw-bold">Monto de reclamo <span class="text-muted fw-normal">(S/)</span></label>
+                        <input type="number" step="0.01" name="montoReclamo" class="form-control bg-light" value="0.00" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-bold">Descripción</label>
+                    <textarea name="descripcionBien" class="form-control bg-light" rows="3" placeholder="Breve descripción del producto o servicio contratado..." required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-bold">Detalle</label>
+                    <textarea name="detalleReclamo" class="form-control bg-light" rows="4" placeholder="Escribe detalladamente qué ocurrió..." required></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-secondary small fw-bold">Pedido <span class="text-muted fw-normal">(Opcional)</span></label>
+                    <textarea name="pedidoReferencia" class="form-control bg-light" rows="2" placeholder="Acciones o soluciones que solicitas..."></textarea>
+                </div>
+
+                <!-- Checkbox de Políticas -->
+                <div class="form-check mb-4 mt-4">
+                    <input class="form-check-input" type="checkbox" id="politicaPrivacidad" required style="cursor: pointer;">
+                    <label class="form-check-label small text-muted" for="politicaPrivacidad" style="cursor: pointer;">
+                        He leído y autorizo el tratamiento de mi datos según la <a href="#" class="text-danger text-decoration-none fw-bold">Política de Privacidad</a> de Librería de Alejandría.
+                    </label>
+                </div>
+
+                <!-- Botón Centrado de Envío -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn text-white fw-bold px-5 py-2" style="background-color: #c86b66; border-radius: 8px; font-size: 0.95rem;">
+                        ENVIAR RECLAMO
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <!-- FOOTER COMPONENTE -->
+    <div th:replace="~{componentes/componente :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/funciones.js"></script>
+</body>
+</html>

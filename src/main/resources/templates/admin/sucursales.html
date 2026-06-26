@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alejandría Admin - Sucursales</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/admin-sucursales.css}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-admin py-0 mb-4">
+        <div class="container-fluid px-5">
+            <a class="navbar-brand py-3" href="#">Biblioteca Alejandría</a>
+            <ul class="nav nav-tabs mx-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin}">Catálogo de Libros</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/usuarios}">Gestión de Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/admin/sucursales}">Sucursales</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/reportes}">Reportes</a></li>
+            </ul>
+            <div class="d-flex align-items-center gap-3">
+                
+                <div class="text-end lh-sm" th:if="${usuarioLogueado != null}">
+                    <div class="fw-bold fs-6" th:text="${usuarioLogueado.nombreCompleto}">Nombre Usuario</div>
+                    <small class="text-muted" style="font-size: 0.75rem;" 
+                           th:text="${!usuarioLogueado.roles.isEmpty() ? usuarioLogueado.roles[0].nombre : 'SIN ROL'} + ' | Sede Central'">
+                        Rol | Sede Central
+                    </small>
+                </div>
+
+                <div class="bg-white rounded-circle d-flex align-items-center justify-content-center border" style="width: 40px; height: 40px;">
+                    <i class="bi bi-person text-secondary"></i>
+                </div>
+                <a href="/logout" class="text-danger text-decoration-none ms-3 small fw-medium">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-5 pb-5">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Locales y Sedes</h2>
+                <p class="text-muted small mb-0">Mantenimiento de sucursales físicas de la librería.</p>
+            </div>
+            <button class="btn btn-maroon rounded-pill px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalNuevaSucursal">
+                <i class="bi bi-plus-lg me-1"></i> Nueva Sucursal
+            </button>
+        </div>
+
+        <div th:if="${exito}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i><span th:text="${exito}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-borderless align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>NOMBRE DE SEDE</th>
+                            <th>DIRECCIÓN</th>
+                            <th>TELÉFONO</th>
+                            <th>SERVICIO DE BIBLIOTECA</th>
+                            <th class="text-end">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="sucursal : ${sucursales}" th:if="${sucursal.activo}">
+                            <td class="fw-bold text-dark" th:text="${sucursal.nombre}">Nombre de la Sede</td>
+                            <td th:text="${sucursal.direccion}">Dirección</td>
+                            <td th:text="${sucursal.telefono}">Teléfono</td>
+                            <td>
+                                <span th:if="${sucursal.tieneBiblioteca}" class="badge-biblioteca-si">SI (HABILITADO)</span>
+                                <span th:unless="${sucursal.tieneBiblioteca}" class="badge-biblioteca-no">NO (SOLO TIENDA)</span>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn-action" data-bs-toggle="modal" data-bs-target="#modalEditarSucursal"
+                                        th:data-id="${sucursal.id}" 
+                                        th:data-nombre="${sucursal.nombre}" 
+                                        th:data-direccion="${sucursal.direccion}" 
+                                        th:data-telefono="${sucursal.telefono}" 
+                                        th:data-biblioteca="${sucursal.tieneBiblioteca}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn-action btn-eliminar-sucursal text-danger" 
+                                        th:data-id="${sucursal.id}" 
+                                        th:data-nombre="${sucursal.nombre}" 
+                                        data-tiene-elementos="false">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <tr th:if="${#lists.isEmpty(sucursales)}">
+                            <td colspan="5" class="text-center text-muted py-4">No hay sucursales registradas o activas en el sistema.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalNuevaSucursal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center pb-0 border-0">
+                    <div class="modal-branch-icon"><i class="bi bi-geo-alt"></i></div>
+                    <div>
+                        <h5 class="fw-bold mb-0">Registrar Nuevo Local / Sede</h5>
+                        <p class="text-muted small mb-0">Complete los datos de la nueva sucursal</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto align-self-start mt-1" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/admin/sucursales/nuevo}" method="post">
+                    <div class="modal-body pt-4">
+                        <div class="mb-3">
+                            <label class="form-label">NOMBRE DE LA SEDE</label>
+                            <input type="text" name="nombreSede" class="form-control" placeholder="Ej: Sucursal Sur" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">DIRECCIÓN</label>
+                            <input type="text" name="direccion" class="form-control" placeholder="Ej: Av. Las Palmeras 456" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">TELÉFONO</label>
+                            <input type="text" name="telefono" class="form-control" placeholder="Ej: 01 555-9876" required>
+                        </div>
+
+                        <div class="switch-container mt-4" id="nuevoSwitchContainer">
+                            <div>
+                                <h6 class="fw-bold mb-0">Servicio de Biblioteca</h6>
+                                <small class="text-muted">¿Habilitar servicio de biblioteca física en este local?</small>
+                            </div>
+                            <div class="form-check form-switch d-flex align-items-center gap-2 mb-0">
+                                <input class="form-check-input m-0" type="checkbox" role="switch" name="servicioBiblioteca" id="nuevoSwitchBiblioteca">
+                                <span id="nuevoLabelBiblioteca" class="fw-bold text-secondary mb-0" style="min-width: 90px;">DESACTIVADO</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center gap-2 border-0 pt-0">
+                        <button type="button" class="btn btn-light border px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-maroon px-4 rounded-pill"><i class="bi bi-check-circle me-1"></i> Guardar Sucursal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEditarSucursal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center pb-0 border-0">
+                    <div class="modal-branch-icon"><i class="bi bi-building-gear"></i></div>
+                    <div>
+                        <h5 class="fw-bold mb-0" id="editModalTitle">Editar Sede</h5>
+                        <p class="text-muted small mb-0">Modifica los datos de la sucursal seleccionada</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto align-self-start mt-1" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/admin/sucursales/editar}" method="post">
+                    <input type="hidden" name="id" id="editId">
+                    <div class="modal-body pt-4">
+                        <div class="mb-3">
+                            <label class="form-label">NOMBRE DE LA SEDE</label>
+                            <input type="text" name="nombreSede" id="editNombreSede" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">DIRECCIÓN</label>
+                            <input type="text" name="direccion" id="editDireccion" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">TELÉFONO</label>
+                            <input type="text" name="telefono" id="editTelefono" class="form-control" required>
+                        </div>
+
+                        <div class="switch-container mt-4" id="editSwitchContainer">
+                            <div>
+                                <h6 class="fw-bold mb-0">Servicio de Biblioteca</h6>
+                                <small class="text-muted">¿Habilitar servicio de biblioteca física en este local?</small>
+                            </div>
+                            <div class="form-check form-switch d-flex align-items-center gap-2 mb-0">
+                                <input class="form-check-input m-0" type="checkbox" role="switch" name="servicioBiblioteca" id="editSwitchBiblioteca">
+                                <span id="editLabelBiblioteca" class="fw-bold text-success mb-0" style="min-width: 90px;">HABILITADO</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center gap-2 border-0 pt-0">
+                        <button type="button" class="btn btn-light border px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-maroon px-4 rounded-pill"><i class="bi bi-check-circle me-1"></i> Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalErrorIntegridad" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body p-0 mb-3">
+                    <div class="mx-auto bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 1.8rem;">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <h4 class="fw-bold mb-2">Error de Integridad Referencial</h4>
+                    <p class="text-muted px-2 mb-0">
+                        No se puede eliminar la <strong id="errorNombreSede" class="text-dark"></strong> porque tiene inventario, pedidos y ejemplares de biblioteca asociados en el sistema.
+                    </p>
+                    <p class="text-muted small mt-2">Debe reasignar estos registros antes de proceder con el borrado físico o lógico.</p>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-danger px-5 py-2 rounded-pill" data-bs-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDesactivarSucursal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <form th:action="@{/admin/sucursales/desactivar}" method="post">
+                    <input type="hidden" name="id" id="desactivarId">
+                    <div class="modal-body p-0 mb-4">
+                        <div class="mx-auto bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">¿Desactivar Sucursal?</h4>
+                        <p class="text-muted mb-0">La sede <strong id="desactivarNombreSede" class="text-dark"></strong> no registra dependencias activas y puede ser removida de la lista pública con seguridad.</p>
+                    </div>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-light border px-4 py-2 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning text-dark px-4 py-2 rounded-pill fw-medium">Confirmar Desactivación</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/admin-sucursales.js}"></script>
+
+</body>
+</html>
