@@ -63,9 +63,6 @@
             </aside>
 
 			<main class="col-md-9">
-			                <!-- ======================================================= -->
-			                <!-- NUEVO COMPONENTE: CARRUSEL DE BANNERS PREMIUM          -->
-			                <!-- ======================================================= -->
 							<div class="col-12">
 							    <div id="carruselPromociones" class="carousel slide mb-4 shadow-sm rounded overflow-hidden" data-bs-ride="carousel" style="border: 1px solid rgba(200, 107, 102, 0.2);">
 							        <div class="carousel-indicators">
@@ -130,19 +127,19 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="d-grid gap-1 mt-auto">
-                                    <form th:action="@{/tienda/carrito/agregar}" method="POST">
-                                        <input type="hidden" name="libroId" th:value="${libro.id}" />
-                                        <input type="hidden" name="cantidad" value="1" />
-                                        <button type="button"
-										        class="btn btn-sm text-white fw-bold w-100"
-										        style="background-color: #c86b66;"
-										        th:onclick="'agregarAlCarrito(' + ${libro.id} + ')'">
-										    Añadir al Carrito
-										</button>
-                                    </form>
-                                    <a th:href="@{/tienda/libro/{slug}(slug=${libro.slug})}" class="btn btn-outline-secondary btn-sm">Ver detalle</a>
-                                </div>
+								<div class="d-grid gap-1 mt-auto capa-botones-hover">
+								    <form th:action="@{/tienda/carrito/agregar}" method="POST">
+								        <input type="hidden" name="libroId" th:value="${libro.id}" />
+								        <input type="hidden" name="cantidad" value="1" />
+								        <button type="button"
+								                class="btn btn-sm text-white fw-bold w-100"
+								                style="background-color: #c86b66;"
+								                th:onclick="'agregarAlCarrito(' + ${libro.id} + ')'">
+								            Añadir al Carrito
+								        </button>
+								    </form>
+								    <a th:href="@{/tienda/libro/{slug}(slug=${libro.slug})}" class="btn btn-outline-secondary btn-sm">Ver detalle</a>
+								</div>
                             </div>
                         </div>
                     </div>

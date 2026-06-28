@@ -408,5 +408,35 @@ body {
        cursor: pointer;              /* Cambia el cursor a una manito */
    }
    
-   
-   
+   /* ======================
+      EFECTO HOVER BOTONES 
+      ======================*/
+
+   /* 1. Aseguramos que la tarjeta sea el límite */
+   .card {
+       position: relative !important;
+   }
+
+   /* 2. Botones ocultos abajo */
+   .capa-botones-hover {
+       position: absolute !important;
+       bottom: 0 !important;
+       left: 0 !important;
+       right: 0 !important;
+       background-color: rgba(255, 255, 255, 0.95) !important;
+       padding: 10px !important;
+       
+       /* Configuración de invisibilidad */
+       opacity: 0 !important;
+       visibility: hidden !important;
+       transform: translateY(20px) !important;
+       transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease !important;
+       z-index: 100 !important;
+   }
+
+   /* 3. ¡Aparecen al pasar el mouse por CUALQUIER parte de la tarjeta! */
+   .card:hover .capa-botones-hover {
+       opacity: 1 !important;
+       visibility: visible !important;
+       transform: translateY(0) !important;
+   }
