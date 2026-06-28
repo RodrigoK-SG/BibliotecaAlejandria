@@ -51,14 +51,17 @@ public class TiendaControlador {
             @RequestParam(name = "buscar", required = false) String buscar,
             @RequestParam(name = "categorias", required = false) List<Integer> categoriasIds,
             @RequestParam(name = "formatos", required = false) List<String> formatosSeleccionados,
+            // 🟢 NUEVO: Agregamos el parámetro para capturar la opción del select
+            @RequestParam(name = "orden", defaultValue = "default") String orden, 
             Model model) {
+        
         List<Libro> libros;
+        
         // 1. Filtro principal por Búsqueda de Texto (Título o ISBN)
         if (buscar != null && !buscar.trim().isEmpty()) {
             libros = libroRepositorio.findByTituloContainingIgnoreCaseOrIsbnContainingIgnoreCase(buscar, buscar);
         } else {
             libros = libroRepositorio.findAll(); 
-            
         }
         
         // 2. Filtro por Categorías (Si el usuario marcó alguna)
@@ -76,6 +79,16 @@ public class TiendaControlador {
                 .collect(Collectors.toList());
         }
 
+        // 🟢 NUEVO: Lógica de ordenamiento global (Usando compareTo porque es BigDecimal)
+        if ("precio-asc".equals(orden)) {
+            libros.sort((l1, l2) -> l1.getPrecioVentaActual().compareTo(l2.getPrecioVentaActual()));
+        } else if ("precio-desc".equals(orden)) {
+            libros.sort((l1, l2) -> l2.getPrecioVentaActual().compareTo(l1.getPrecioVentaActual()));
+        }
+
+        // 🟢 NUEVO: Enviamos la variable "ordenActual" al HTML para que el select no se borre
+        model.addAttribute("ordenActual", orden);
+        
         model.addAttribute("libros", libros);
         
         // Asegúrate de enviar también las categorías a la vista para renderizar el menú lateral

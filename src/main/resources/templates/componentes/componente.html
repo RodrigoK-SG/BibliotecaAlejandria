@@ -54,87 +54,102 @@
     </nav>
 
 
-    <footer th:fragment="footer" class="mt-5 border-top" style="background-color: #f4eee1; color: #333333;">
-        <div class="container pt-5 pb-4">
-            <div class="row align-items-start py-4">
+	<footer th:fragment="footer" class="mt-5 border-top" style="background-color: #f4eee1; color: #333333;">
+	        <div class="container pt-5 pb-4">
+	            <div class="row align-items-start py-2">
 
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold" style="color: #8c3f3b; font-family: 'Georgia', serif;">Librería de Alejandría</h6>
-                    <p class="text-muted small">Libros para todos</p>
-                    <p class="text-uppercase fw-bold text-secondary m-0 mt-3" style="font-size: 0.70rem; letter-spacing: 1px;">Visita nuestras redes</p>
-                    <div class="d-flex gap-2 mt-2 text-muted fs-5">
-                        <i class="bi bi-facebook"></i>
-                        <i class="bi bi-instagram"></i>
-                        <i class="bi bi-youtube"></i>
-                    </div>
-                </div>
+	                <div class="col-md-3 mb-4">
+	                    <h6 class="fw-bold" style="color: #8c3f3b; font-family: 'Georgia', serif;">Librería de Alejandría</h6>
+	                    <p class="text-muted small mb-4">Libros para todos.</p>
+	                    <p class="text-uppercase fw-bold text-secondary m-0" style="font-size: 0.70rem; letter-spacing: 1px;">Síguenos</p>
+	                    <div class="d-flex gap-3 mt-2 fs-5">
+	                        <a href="#" class="text-muted text-decoration-none"><i class="bi bi-facebook"></i></a>
+	                        <a href="#" class="text-muted text-decoration-none"><i class="bi bi-instagram"></i></a>
+	                        <a href="#" class="text-muted text-decoration-none"><i class="bi bi-youtube"></i></a>
+	                    </div>
+	                </div>
 
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold text-dark small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Sobre Nosotros</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2 small mt-3">
-                        <li><a href="/tienda/nuestra-historia" class="text-decoration-none text-muted">Nuestra Historia</a></li>
-                        <li><a href="/tienda/contacto" class="text-decoration-none text-muted">Contáctanos</a></li>
-                    </ul>
-                </div>
+	                <div class="col-md-3 mb-4">
+	                    <h6 class="fw-bold text-dark small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Sobre Nosotros</h6>
+	                    <ul class="list-unstyled d-flex flex-column gap-2 small mt-3">
+	                        <li><a href="/tienda/nuestra-historia" class="text-decoration-none text-muted"><i class="bi bi-chevron-right text-danger me-1" style="font-size: 0.7rem;"></i>Nuestra Historia</a></li>
+	                        <li><a href="/tienda/contacto" class="text-decoration-none text-muted"><i class="bi bi-chevron-right text-danger me-1" style="font-size: 0.7rem;"></i>Contáctanos</a></li>
+	                    </ul>
+	                </div>
 
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold text-dark small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Mi Cuenta</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2 small mt-3">
-                        <li><a href="/tienda/perfil#pedidos-tab" class="text-decoration-none text-muted">Mis Pedidos</a></li>
-                        <li><a href="/tienda/perfil#ajustes-tab" class="text-decoration-none text-muted">Ajustes de Cuenta</a></li>
-                    </ul>
-                </div>
+	                <div class="col-md-3 mb-4">
+	                    <h6 class="fw-bold text-dark small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Mi Cuenta</h6>
+	                    <ul class="list-unstyled d-flex flex-column gap-2 small mt-3">
+	                        <li><a href="/tienda/perfil#pedidos-tab" class="text-decoration-none text-muted"><i class="bi bi-chevron-right text-danger me-1" style="font-size: 0.7rem;"></i>Mis Pedidos</a></li>
+	                        <li><a href="/tienda/perfil#ajustes-tab" class="text-decoration-none text-muted"><i class="bi bi-chevron-right text-danger me-1" style="font-size: 0.7rem;"></i>Ajustes de Cuenta</a></li>
+	                    </ul>
+	                </div>
 
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold text-dark small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Atención al Cliente</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2 small mt-3">
-                        <li><a th:href="@{/tienda/envio}" class="text-decoration-none text-muted">Políticas de Envío</a></li>
-                        <li><a th:href="@{/tienda/devolucion}" class="text-decoration-none text-muted">Políticas de Devolución</a></li>
-                        <li><a th:href="@{/tienda/terminos}" class="text-decoration-none text-muted">Términos y Condiciones</a></li>
-                    </ul>
-                </div>
-            </div>
+	                <div class="col-md-3 mb-4">
+	                    <h6 class="fw-bold text-dark small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Atención al Cliente</h6>
+	                    <ul class="list-unstyled d-flex flex-column gap-2 small mt-3">
+	                        <li><a th:href="@{/tienda/envio}" class="text-decoration-none text-muted"><i class="bi bi-chevron-right text-danger me-1" style="font-size: 0.7rem;"></i>Políticas de Envío</a></li>
+	                        <li><a th:href="@{/tienda/devolucion}" class="text-decoration-none text-muted"><i class="bi bi-chevron-right text-danger me-1" style="font-size: 0.7rem;"></i>Políticas de Devolución</a></li>
+	                        <li><a th:href="@{/tienda/terminos}" class="text-decoration-none text-muted"><i class="bi bi-chevron-right text-danger me-1" style="font-size: 0.7rem;"></i>Términos y Condiciones</a></li>
+	                    </ul>
+	                </div>
+	            </div>
 
-            <hr class="text-muted opacity-25 my-4">
-            <div class="row align-items-center small text-muted">
-                <div class="col-md-6 text-md-start text-center mb-2 mb-md-0">
-                    Librería de Alejandría 2026. Todos los derechos reservados | RUC 20123456789
-                </div>
-                <div class="col-md-6 text-md-end text-center d-flex justify-content-center justify-content-md-end gap-3 fs-3 align-items-center opacity-75">
-                    <i class="bi bi-credit-card-2-front text-primary" title="Visa"></i>
-                    <i class="bi bi-credit-card-2-back text-danger" title="Mastercard"></i>
-                </div>
-            </div>
-        </div>
+	            <div class="row align-items-center mt-3 p-4 rounded shadow-sm mx-0" style="background-color: rgb(192, 192, 192); border: 1px solid rgba(200, 107, 102, 0.2);">
+	                <div class="col-md-6 mb-3 mb-md-0">
+	                    <h6 class="fw-bold m-0" style="color: #8c3f3b;"><i class="bi bi-envelope-paper-heart me-2"></i>Suscríbete a nuestro boletín</h6>
+	                    <p class="text-muted small m-0 mt-1">Recibe las mejores ofertas, novedades y cupones exclusivos directamente en tu correo.</p>
+	                </div>
+	                <div class="col-md-6">
+	                    <div class="input-group input-group-sm">
+	                        <input type="email" class="form-control bg-light border-0" placeholder="Tu correo electrónico..." aria-label="Tu correo electrónico">
+	                        <button class="btn text-white fw-bold px-3" style="background-color: #c86b66;" type="button">Suscribirme</button>
+	                    </div>
+	                </div>
+	            </div>
 
-        <div class="py-4 text-white" style="background-color: #3e4a59;">
-            <div class="container">
-                <div class="row text-center text-md-start g-3">
-                    <div class="col-md-4 d-flex flex-column flex-md-row align-items-center gap-3">
-                        <i class="bi bi-box-seam fs-1" style="color: #f4eee1;"></i>
-                        <div>
-                            <h6 class="fw-bold mb-1">Envío a todo el Perú</h6>
-                            <p class="small text-white-50 m-0">Llevamos tus productos a tu casa</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 d-flex flex-column flex-md-row align-items-center gap-3 justify-content-md-center">
-                        <i class="bi bi-shield-check fs-1" style="color: #f4eee1;"></i>
-                        <div class="text-md-start text-center">
-                            <h6 class="fw-bold mb-1">Compras Seguras</h6>
-                            <p class="small text-white-50 m-0">Tus compras son 100% protegidas</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 d-flex flex-column flex-md-row align-items-center gap-3 justify-content-md-end">
-                        <i class="bi bi-headset fs-1" style="color: #f4eee1;"></i>
-                        <div class="text-md-start text-center">
-                            <h6 class="fw-bold mb-1">Equipo Especializado</h6>
-                            <p class="small text-white-50 m-0">Te ayudamos en lo que necesites</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+	            <hr class="text-muted opacity-25 mt-5 mb-4">
+	            
+	            <div class="row align-items-center small text-muted">
+	                <div class="col-md-6 text-md-start text-center mb-3 mb-md-0">
+	                    Librería de Alejandría 2026. Todos los derechos reservados | RUC 20123456789
+	                </div>
+	                <div class="col-md-6 text-md-end text-center d-flex justify-content-center justify-content-md-end gap-3 fs-4 align-items-center opacity-75">
+	                    <i class="bi bi-qr-code-scan text-success" title="Yape / Plin"></i>
+	                    <i class="bi bi-credit-card-2-front text-primary" title="Visa"></i>
+	                    <i class="bi bi-credit-card-2-back text-danger" title="Mastercard"></i>
+	                </div>
+	            </div>
+	        </div>
+
+	        <div class="py-4 text-white" style="background-color: #3e4a59;">
+	            <div class="container">
+	                <div class="row text-center text-md-start g-3">
+	                    <div class="col-md-4 d-flex flex-column flex-md-row align-items-center gap-3">
+	                        <i class="bi bi-box-seam fs-1" style="color: #f4eee1;"></i>
+	                        <div>
+	                            <h6 class="fw-bold mb-1">Envío a todo el Perú</h6>
+	                            <p class="small text-white-50 m-0">Llevamos tus productos a tu casa</p>
+	                        </div>
+	                    </div>
+	                    <div class="col-md-4 d-flex flex-column flex-md-row align-items-center gap-3 justify-content-md-center">
+	                        <i class="bi bi-shield-check fs-1" style="color: #f4eee1;"></i>
+	                        <div class="text-md-start text-center">
+	                            <h6 class="fw-bold mb-1">Compras Seguras</h6>
+	                            <p class="small text-white-50 m-0">Tus compras son 100% protegidas</p>
+	                        </div>
+	                    </div>
+	                    <div class="col-md-4 d-flex flex-column flex-md-row align-items-center gap-3 justify-content-md-end">
+	                        <i class="bi bi-headset fs-1" style="color: #f4eee1;"></i>
+	                        <div class="text-md-start text-center">
+	                            <h6 class="fw-bold mb-1">Equipo Especializado</h6>
+	                            <p class="small text-white-50 m-0">Te ayudamos en lo que necesites</p>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </footer>
 
 </body>
 </html>

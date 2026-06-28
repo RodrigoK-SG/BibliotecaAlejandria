@@ -391,6 +391,26 @@ body {
        letter-spacing: 2px !important;
    }
    
+   /* Fondo para el Slide 3 (Aventura/Mundos infinitos) */
+   .banner-slide-3 {
+       background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.5)), 
+                   url('https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=1200') no-repeat center center;
+       background-size: cover;
+   }
+
+   /* Fondo para el Slide 4 (Estudio/Saber) */
+   .banner-slide-4 {
+       background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.5)), 
+                   url('https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?q=80&w=1200') no-repeat center center;
+       background-size: cover;
+   }
+   
+   #carruselPromociones .carousel-item h2 {
+       font-family: 'Georgia', serif !important;
+       font-style: italic !important;
+       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+   }
+   
    /* ==========================================================================
       ILUMINACIÓN EXCLUSIVA PARA EL TEXTO DE LOS FILTROS
       ========================================================================== */
@@ -439,4 +459,61 @@ body {
        opacity: 1 !important;
        visibility: visible !important;
        transform: translateY(0) !important;
+   }
+   
+   
+   
+   
+   /* Mejorar la legibilidad de los títulos de libros */
+   .card-body .fw-bold {
+       letter-spacing: -0.2px; /* Hace que el texto se vea más compacto y profesional */
+       line-height: 1.2;
+   }
+
+   /* Darle un tono más oscuro al precio para que resalte más */
+   .text-danger {
+       font-weight: 700 !important;
+       font-size: 1.1rem;
+   }
+   
+   
+   
+   /* ==========================================================================
+      EFECTO HOVER PARA ENLACES DEL FOOTER
+      ========================================================================== */
+   footer .list-unstyled a {
+       transition: color 0.2s ease, padding-left 0.2s ease;
+   }
+
+   footer .list-unstyled a:hover {
+       color: #8c3f3b !important; /* El color guinda elegante de tu navbar */
+       padding-left: 4px; /* Hace un micro-movimiento hacia la derecha muy sutil */
+       text-shadow: 0 0 1px rgba(140, 63, 59, 0.2); /* Resalta un poco el texto */
+   }
+
+   /* También le da un toque de color al icono del chevron al hacer hover */
+   footer .list-unstyled a:hover i {
+       color: #8c3f3b !important;
+   }
+   
+   
+   
+   
+   /* ==========================================================================
+      EFECTO DE CARGA SUAVE AL RECARGAR LA PÁGINA (FADE-IN)
+      ========================================================================== */
+   @keyframes fadeInPage {
+       from {
+           opacity: 0;
+           transform: translateY(4px); /* Sube sutilmente al cargar */
+       }
+       to {
+           opacity: 1;
+           transform: translateY(0);
+       }
+   }
+
+   body {
+       /* Aplica la animación al cargar: dura 0.4 segundos y es fluida */
+       animation: fadeInPage 0.4s ease-in-out forwards;
    }

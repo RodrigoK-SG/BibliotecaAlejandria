@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	// PAGINACIÓN PARA EL CATÁLOGO
 	// ==========================================================================
 	document.addEventListener("DOMContentLoaded", function () {
-	    const librosPorPagina = 30; // Puedes cambiar esto al número que desees
+	    const librosPorPagina = 32; // Puedes cambiar esto al número que desees
 	    const grilla = document.getElementById("grilla-libros");
 	    const paginacionContenedor = document.getElementById("paginacion-libros");
 
@@ -199,3 +199,56 @@ document.addEventListener("DOMContentLoaded", function () {
 	        mostrarPagina(1);
 	    }
 	});
+	
+	
+	
+	// 1. Ejecutar el ordenamiento automáticamente apenas cargue la página
+	document.addEventListener("DOMContentLoaded", function () {
+	    const ordenador = document.getElementById('ordenadorCatalogo');
+	    if (!ordenador) return; // Si no está en la página actual, salimos
+
+	    // Recuperamos si había un orden guardado en la memoria del navegador
+	    const ordenGuardado = localStorage.getItem('ordenCatalogo');
+
+	    if (ordenGuardado && ordenGuardado !== 'default') {
+	        ordenador.value = ordenGuardado; // Marcamos visualmente el select
+	        ejecutarOrdenamiento(ordenGuardado); // Ordenamos los libros de esta página
+	    }
+
+	    // 2. Escuchar cuando el usuario cambia manualmente el orden
+	    ordenador.addEventListener('change', function () {
+	        const ordenSeleccionado = this.value;
+	        localStorage.setItem('ordenCatalogo', ordenSeleccionado); // Guardamos la elección
+	        ejecutarOrdenamiento(ordenSeleccionado);
+	    });
+	});
+
+	// Función aislada que hace la magia de mover las tarjetas
+	function ejecutarOrdenamiento(orden) {
+	    const grilla = document.getElementById('grilla-libros');
+	    if (!grilla) return;
+
+	    let libros = Array.from(grilla.querySelectorAll('.col'));
+	    if (libros.length === 0) return;
+
+	    if (orden === 'precio-asc') {
+	        libros.sort((a, b) => {
+	            const cardA = a.querySelector('.book-card');
+	            const cardB = b.querySelector('.book-card');
+	            if (!cardA || !cardB) return 0;
+	            return parseFloat(cardA.dataset.price) - parseFloat(cardB.dataset.price);
+	        });
+	    } else if (orden === 'precio-desc') {
+	        libros.sort((a, b) => {
+	            const cardA = a.querySelector('.book-card');
+	            const cardB = b.querySelector('.book-card');
+	            if (!cardA || !cardB) return 0;
+	            return parseFloat(cardB.dataset.price) - parseFloat(cardA.dataset.price);
+	        });
+	    } else {
+	        return; // Si es relevancia, dejamos el orden por defecto del servidor
+	    }
+
+	    // Limpiamos y volvemos a inyectar en el nuevo orden
+	    libros.forEach(libro => grilla.appendChild(libro));
+	}
