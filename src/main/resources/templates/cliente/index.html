@@ -62,11 +62,47 @@
                 </form>
             </aside>
 
-            <main class="col-md-9">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="fw-bold m-0">Catálogo de Libros</h4>
-                    <span class="text-muted" th:text="${libros.size() + ' resultados'}">0 resultados</span>
-                </div>
+			<main class="col-md-9">
+			                <!-- ======================================================= -->
+			                <!-- NUEVO COMPONENTE: CARRUSEL DE BANNERS PREMIUM          -->
+			                <!-- ======================================================= -->
+							<div class="col-12">
+							    <div id="carruselPromociones" class="carousel slide mb-4 shadow-sm rounded overflow-hidden" data-bs-ride="carousel" style="border: 1px solid rgba(200, 107, 102, 0.2);">
+							        <div class="carousel-indicators">
+							            <button type="button" data-bs-target="#carruselPromociones" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+							            <button type="button" data-bs-target="#carruselPromociones" data-bs-slide-to="1" aria-label="Slide 2"></button>
+							        </div>
+							        <div class="carousel-inner">
+							            <div class="carousel-item active" data-bs-interval="4000">
+							                <div class="p-5 text-white d-flex flex-column justify-content-center align-items-start banner-slide-1" style="height: 300px;">
+							                    <span class="badge mb-2 uppercase fw-bold tracking-wider" style="background-color: #c86b66;">Novedades</span>
+							                    <h2 class="fw-bold text-glow">Lecturas que Inspiran</h2>
+							                    <p class="mb-0 text-white-50">Explora los últimos lanzamientos y expande tu biblioteca personal hoy mismo.</p>
+							                </div>
+							            </div>
+							            <div class="carousel-item" data-bs-interval="4000">
+							                <div class="p-5 text-white d-flex flex-column justify-content-center align-items-start banner-slide-2" style="height: 300px;">
+							                    <span class="badge bg-dark mb-2 uppercase fw-bold tracking-wider">Promoción Especial</span>
+							                    <h2 class="fw-bold text-glow">20% de Descuento en Novelas</h2>
+							                    <p class="mb-0 text-white-50">Aprovecha pagando de manera rápida y segura utilizando Yape o Plin.</p>
+							                </div>
+							            </div>
+							        </div>
+							        <button class="carousel-control-prev" type="button" data-bs-target="#carruselPromociones" data-bs-slide="prev">
+							            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							            <span class="visually-hidden">Anterior</span>
+							        </button>
+							        <button class="carousel-control-next" type="button" data-bs-target="#carruselPromociones" data-bs-slide="next">
+							            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+							            <span class="visually-hidden">Siguiente</span>
+							        </button>
+							    </div>
+							</div>
+
+			                <div class="d-flex justify-content-between align-items-center mb-3">
+			                    <h4 class="fw-bold m-0">Catálogo de Libros</h4>
+			                    <span class="text-muted" th:text="${libros.size() + ' resultados'}">0 resultados</span>
+			                </div>
 
                 <div class="row row-cols-1 row-cols-md-4 g-3">
                     

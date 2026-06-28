@@ -362,3 +362,51 @@ body {
     letter-spacing: 2px !important;
     line-height: 1.6;
 }
+
+
+
+/* ==========================================================================
+   CARRUSEL DE PROMOCIONES
+   ========================================================================== */
+
+   .banner-slide-1 {
+       background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1000&auto=format&fit=crop');
+       background-size: cover;
+       background-position: center;
+       background-repeat: no-repeat;
+   }
+
+   .banner-slide-2 {
+       background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1000&auto=format&fit=crop');
+       background-size: cover;
+       background-position: center;
+       background-repeat: no-repeat;
+   }
+
+   .text-glow {
+       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+   }
+
+   .tracking-wider {
+       letter-spacing: 2px !important;
+   }
+   
+   /* ==========================================================================
+      ILUMINACIÓN EXCLUSIVA PARA EL TEXTO DE LOS FILTROS
+      ========================================================================== */
+
+   /* Apuntamos directamente a la etiqueta de texto sin alterar los márgenes del contenedor */
+   .form-check-label {
+       transition: color 0.2s ease, transform 0.2s ease;
+       display: inline-block; /* Permite que el texto se mueva sutilmente sin desordenar la línea */
+   }
+
+   /* El efecto solo se activa cuando pasas el mouse por encima del texto */
+   .form-check-label:hover {
+       color: #c86b66 !important;   /* Cambia el color de la letra al coral de tu marca */
+       transform: translateX(3px);   /* Se desplaza sutilmente a la derecha */
+       cursor: pointer;              /* Cambia el cursor a una manito */
+   }
+   
+   
+   
