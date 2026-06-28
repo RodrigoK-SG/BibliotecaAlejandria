@@ -98,9 +98,12 @@
                                     <form th:action="@{/tienda/carrito/agregar}" method="POST">
                                         <input type="hidden" name="libroId" th:value="${libro.id}" />
                                         <input type="hidden" name="cantidad" value="1" />
-                                        <button type="submit" class="btn btn-sm text-white fw-bold w-100" style="background-color: #c86b66;">
-                                            Añadir al Carrito
-                                        </button>
+                                        <button type="button"
+										        class="btn btn-sm text-white fw-bold w-100"
+										        style="background-color: #c86b66;"
+										        th:onclick="'agregarAlCarrito(' + ${libro.id} + ')'">
+										    Añadir al Carrito
+										</button>
                                     </form>
                                     <a th:href="@{/tienda/libro/{slug}(slug=${libro.slug})}" class="btn btn-outline-secondary btn-sm">Ver detalle</a>
                                 </div>
@@ -115,5 +118,6 @@
     <div th:replace="~{componentes/componente :: footer}"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/pagos.js"></script>
 </body>
 </html>

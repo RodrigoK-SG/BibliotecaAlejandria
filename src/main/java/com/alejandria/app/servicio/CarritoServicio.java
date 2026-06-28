@@ -67,12 +67,32 @@ public class CarritoServicio {
                 .orElseThrow(() -> new RuntimeException("Carrito no encontrado."));
         
         CarritoDetalleId detalleId = new CarritoDetalleId(carrito.getId(), libroId);
-        carritoDetalleRepositorio.deleteById(detalleId);
+        carritoDetalleRepositorio.deleteByCarritoIdAndLibroId(carrito.getId(), libroId);
     }
 
     @Transactional
     public void limpiarCarrito(Carrito carrito) {
         carrito.getDetalles().clear();
         carritoRepositorio.save(carrito);
+    }
+    
+    @Transactional
+    public void actualizarCantidad(Integer clienteId, Integer libroId, int nuevaCantidad) {
+
+        Carrito carrito = carritoRepositorio.findByClienteId(clienteId)
+                .orElseThrow();
+
+        CarritoDetalleId id = new CarritoDetalleId(carrito.getId(), libroId);
+
+        if (nuevaCantidad <= 0) {
+            carritoDetalleRepositorio.deleteByCarritoIdAndLibroId(carrito.getId(), libroId);
+            return;
+        }
+
+        CarritoDetalle detalle = carritoDetalleRepositorio.findById(id)
+                .orElseThrow();
+
+        detalle.setCantidad(nuevaCantidad);
+        carritoDetalleRepositorio.save(detalle);
     }
 }

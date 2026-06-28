@@ -8,6 +8,9 @@ import com.alejandria.app.repositorio.ClienteRepositorio;
 import com.alejandria.app.repositorio.LibroRepositorio;
 import com.alejandria.app.servicio.*;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -95,14 +98,20 @@ public class TiendaControlador {
     // 2. CARRITO Y CHECKOUT (Privado)
     // ==========================================
     @PostMapping("/carrito/agregar")
-    public String agregarAlCarrito(Principal principal,
-                                   @RequestParam("libroId") Integer libroId, 
-                                   @RequestParam("cantidad") Integer cantidad) {
+    @ResponseBody
+    public ResponseEntity<String> agregarAlCarrito(
+            Principal principal,
+            @RequestParam("libroId") Integer libroId,
+            @RequestParam("cantidad") Integer cantidad) {
+
         Cliente cliente = obtenerClienteSesion(principal);
-        if (cliente == null) return "redirect:/tienda/vista-login";
+        if (cliente == null) {
+            return ResponseEntity.status(401).body("No autorizado");
+        }
 
         carritoServicio.agregarLibroACarrito(cliente.getId(), libroId, cantidad);
-        return "redirect:/tienda/carrito";
+
+        return ResponseEntity.ok("OK");
     }
 
     @GetMapping("/carrito")
@@ -128,6 +137,26 @@ public class TiendaControlador {
         model.addAttribute("cliente", cliente);
         
         return "cliente/pagos";
+    }
+    
+    @GetMapping("/carrito/resumen")
+    @ResponseBody
+    public ResponseEntity<?> obtenerResumenCarrito(Principal principal) {
+
+        Cliente cliente = obtenerClienteSesion(principal);
+        if (cliente == null) return ResponseEntity.status(401).body(null);
+
+        Carrito carrito = carritoServicio.obtenerPorCliente(cliente.getId())
+                .orElse(null);
+
+        if (carrito == null) return ResponseEntity.ok(0);
+
+        int totalItems = carrito.getDetalles()
+                .stream()
+                .mapToInt(CarritoDetalle::getCantidad)
+                .sum();
+
+        return ResponseEntity.ok(totalItems);
     }
 
     @PostMapping("/checkout")
@@ -156,6 +185,65 @@ public class TiendaControlador {
     public String verPedidoExitoso(@RequestParam("id") Integer pedidoId, Model model) {
         model.addAttribute("pedido", pedidoServicio.findById(pedidoId).orElse(null));
         return "cliente/pedido-exitoso";
+    }
+    
+    @PostMapping("/carrito/actualizar-cantidad")
+    @ResponseBody
+    public ResponseEntity<String> actualizarCantidadCarrito(
+            Principal principal,
+            @RequestParam("libroId") Integer libroId,
+            @RequestParam("nuevaCantidad") Integer nuevaCantidad) {
+        try {
+            Cliente cliente = obtenerClienteSesion(principal);
+            if (cliente == null) return ResponseEntity.status(401).body("No autorizado");
+            
+            carritoServicio.actualizarCantidad(cliente.getId(), libroId, nuevaCantidad);
+            return ResponseEntity.ok("OK");
+        } catch (Exception e) {
+            e.printStackTrace(); // Esto imprimirá el error real en tu consola de Eclipse/IntelliJ
+            return ResponseEntity.status(500).body("Error en el servidor: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/carrito/eliminar-item")
+    @ResponseBody
+    public ResponseEntity<String> eliminarItemCarrito(
+            Principal principal,
+            @RequestParam("libroId") Integer libroId) {        
+        try {
+            Cliente cliente = obtenerClienteSesion(principal);
+            if (cliente == null) return ResponseEntity.status(401).body("No autorizado");
+
+            carritoServicio.removerLibroDeCarrito(cliente.getId(), libroId);
+            return ResponseEntity.ok("OK");
+        } catch (Exception e) {
+            e.printStackTrace(); // Revisa la consola al ver este error
+            return ResponseEntity.status(500).body("Error en el servidor: " + e.getMessage());
+        }
+    }
+    
+    @GetMapping("/carrito/cantidad")
+    @ResponseBody
+    public ResponseEntity<Integer> obtenerCantidadCarrito(Principal principal) {
+
+        Cliente cliente = obtenerClienteSesion(principal);
+        if (cliente == null) {
+            return ResponseEntity.status(401).body(0);
+        }
+
+        Carrito carrito = carritoServicio.obtenerPorCliente(cliente.getId())
+                .orElse(null);
+
+        if (carrito == null || carrito.getDetalles() == null) {
+            return ResponseEntity.ok(0);
+        }
+
+        int total = carrito.getDetalles()
+                .stream()
+                .mapToInt(CarritoDetalle::getCantidad)
+                .sum();
+
+        return ResponseEntity.ok(total);
     }
 
     // ==========================================

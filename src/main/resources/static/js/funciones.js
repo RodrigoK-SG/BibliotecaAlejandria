@@ -61,3 +61,57 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+
+// ==========================================================================
+    // AÑADIR AL CARRITO SIN RECARGAR LA PÁGINA (AJAX)
+    // ==========================================================================
+    const formsCarrito = document.querySelectorAll('form[action="/tienda/carrito/agregar"]');
+    
+    formsCarrito.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que la página te lleve a otra pantalla
+            
+            const formData = new FormData(this);
+            const botonSubmit = this.querySelector('button[type="submit"]');
+            const textoOriginal = botonSubmit.innerHTML;
+            
+            // Efecto visual de carga
+            botonSubmit.innerHTML = '<i class="bi bi-hourglass-split"></i> Añadiendo...';
+            botonSubmit.disabled = true;
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if(response.ok) {
+                    // Si el servidor responde OK, actualizamos el numerito rojo
+                    const badge = document.getElementById('cart-badge');
+                    if(badge) {
+                        const cantidadAñadida = parseInt(formData.get('cantidad')) || 1;
+                        const cantidadActual = parseInt(badge.innerText) || 0;
+                        badge.innerText = cantidadActual + cantidadAñadida;
+                    }
+                    
+                    // Efecto visual de éxito
+                    botonSubmit.innerHTML = '<i class="bi bi-check-lg"></i> ¡Añadido!';
+                    botonSubmit.classList.replace('btn-dark', 'btn-success'); // Si usas un color específico, cámbialo
+                    
+                    setTimeout(() => {
+                        botonSubmit.innerHTML = textoOriginal;
+                        botonSubmit.disabled = false;
+                        botonSubmit.classList.replace('btn-success', 'btn-dark');
+                    }, 2000);
+                } else {
+                    alert("Hubo un problema al añadir el libro al carrito.");
+                    botonSubmit.innerHTML = textoOriginal;
+                    botonSubmit.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                botonSubmit.innerHTML = textoOriginal;
+                botonSubmit.disabled = false;
+            });
+        });
+    });

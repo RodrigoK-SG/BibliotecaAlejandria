@@ -42,8 +42,13 @@
                 <span class="text-muted opacity-50">|</span>
 
                 <a th:href="@{/tienda/carrito}" class="position-relative text-decoration-none text-dark ms-1">
-                    <i class="bi bi-cart3 fs-4 text-secondary"></i>
-                </a>
+				    <i class="bi bi-cart3 fs-4 text-secondary"></i>
+				    <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger text-white d-flex align-items-center justify-content-center" 
+				          style="width: 18px; height: 18px; font-size: 0.65rem; padding: 0;" 
+				          th:text="${cantidadCarrito != null ? cantidadCarrito : 0}">
+				          0
+				    </span>
+				</a>
             </div>
         </div>
     </nav>
