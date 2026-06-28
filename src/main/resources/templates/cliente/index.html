@@ -101,7 +101,7 @@
 			                    <span class="text-muted" th:text="${libros.size() + ' resultados'}">0 resultados</span>
 			                </div>
 
-                <div class="row row-cols-1 row-cols-md-4 g-3">
+                <div class="row row-cols-1 row-cols-md-4 g-3" id="grilla-libros">
                     
                     <div class="col-12 text-center py-5" th:if="${#lists.isEmpty(libros)}">
                         <i class="bi bi-journal-x display-1 text-muted opacity-50 mb-3"></i>
@@ -143,7 +143,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>					<nav aria-label="Navegación de páginas" class="mt-5 d-flex justify-content-center">
+					    <ul class="pagination pagination-sm" id="paginacion-libros">
+					    </ul>
+					</nav>
             </main>
         </div>
     </div>
@@ -152,5 +155,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/pagos.js"></script>
+	
+	<script src="/js/funciones.js"></script>
 </body>
 </html>

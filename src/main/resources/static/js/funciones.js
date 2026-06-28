@@ -115,3 +115,87 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     });
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// ==========================================================================
+	// PAGINACIÓN PARA EL CATÁLOGO
+	// ==========================================================================
+	document.addEventListener("DOMContentLoaded", function () {
+	    const librosPorPagina = 30; // Puedes cambiar esto al número que desees
+	    const grilla = document.getElementById("grilla-libros");
+	    const paginacionContenedor = document.getElementById("paginacion-libros");
+
+	    if (grilla && paginacionContenedor) {
+	        const libros = grilla.querySelectorAll(":scope > .col");
+	        const totalPaginas = Math.ceil(libros.length / librosPorPagina);
+
+	        // Si hay menos libros que el límite, no dibujamos paginación
+	        if (totalPaginas <= 1) return;
+
+	        function mostrarPagina(pagina) {
+	            // Ocultar todos los libros
+	            libros.forEach((libro, index) => {
+	                libro.style.display = "none";
+	                // Mostrar solo los que pertenecen a la página actual
+	                if (index >= (pagina - 1) * librosPorPagina && index < pagina * librosPorPagina) {
+	                    libro.style.display = ""; // Restaura el display original
+	                }
+	            });
+	            renderizarPaginacion(pagina);
+	        }
+
+	        function renderizarPaginacion(paginaActual) {
+	            let html = '';
+	            
+	            // Botón Anterior
+	            html += `<li class="page-item ${paginaActual === 1 ? 'disabled' : ''}">
+	                        <a class="page-link text-dark" href="#" data-page="${paginaActual - 1}">Anterior</a>
+	                     </li>`;
+
+	            // Números de página
+	            for (let i = 1; i <= totalPaginas; i++) {
+	                if (i === paginaActual) {
+	                    html += `<li class="page-item active">
+	                                <a class="page-link text-white fw-bold" href="#" style="background-color: #c86b66; border-color: #c86b66;" data-page="${i}">${i}</a>
+	                             </li>`;
+	                } else {
+	                    html += `<li class="page-item">
+	                                <a class="page-link text-dark" href="#" data-page="${i}">${i}</a>
+	                             </li>`;
+	                }
+	            }
+
+	            // Botón Siguiente
+	            html += `<li class="page-item ${paginaActual === totalPaginas ? 'disabled' : ''}">
+	                        <a class="page-link text-dark" href="#" data-page="${paginaActual + 1}">Siguiente</a>
+	                     </li>`;
+
+	            paginacionContenedor.innerHTML = html;
+
+	            // Darle funcionalidad a los botones
+	            paginacionContenedor.querySelectorAll(".page-link").forEach(boton => {
+	                boton.addEventListener("click", function(e) {
+	                    e.preventDefault();
+	                    const paginaDestino = parseInt(this.getAttribute("data-page"));
+	                    if (paginaDestino >= 1 && paginaDestino <= totalPaginas) {
+	                        mostrarPagina(paginaDestino);
+	                        // Subir suavemente al inicio del catálogo
+	                        window.scrollTo({ top: grilla.offsetTop - 80, behavior: 'smooth' });
+	                    }
+	                });
+	            });
+	        }
+
+	        // Iniciar en la página 1
+	        mostrarPagina(1);
+	    }
+	});
