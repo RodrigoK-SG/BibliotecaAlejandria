@@ -14,24 +14,52 @@
 
     <div class="container mt-4">
         <div class="row">
+            
             <aside class="col-md-3">
-                <div class="card p-3 border-light shadow-sm bg-white">
-                    <h5 class="fw-bold mb-3"><i class="bi bi-funnel me-2"></i>Filtros</h5>
+                <form action="/tienda" method="GET" id="formFiltros">
                     
-                    <h6 class="fw-bold text-muted small text-uppercase">Categoría</h6>
-                    <div class="mb-3">
-                        <div class="form-check mb-1" th:each="cat : ${categorias}">
-                            <input class="form-check-input" type="checkbox" th:value="${cat.id}" th:id="'cat-' + ${cat.id}">
-                            <label class="form-check-label" th:for="'cat-' + ${cat.id}" th:text="${cat.nombre}">Ficción</label>
+                    <input type="hidden" name="buscar" th:if="${param.buscar != null}" th:value="${param.buscar}">
+
+                    <div class="card p-3 border-light shadow-sm bg-white">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0"><i class="bi bi-funnel me-2"></i>Filtros</h5>
+                            <a href="/tienda" class="text-decoration-none small text-danger" th:if="${param.categorias != null or param.formatos != null}">Limpiar</a>
+                        </div>
+                        
+                        <h6 class="fw-bold text-muted small text-uppercase">Categoría</h6>
+                        <div class="mb-3">
+                            <div class="form-check mb-1" th:each="cat : ${categorias}">
+                                <input class="form-check-input" type="checkbox" name="categorias" 
+                                       th:value="${cat.id}" th:id="'cat-' + ${cat.id}"
+                                       th:checked="${param.categorias != null and #arrays.contains(param.categorias, cat.id.toString())}"
+                                       onchange="this.form.submit()">
+                                <label class="form-check-label" th:for="'cat-' + ${cat.id}" th:text="${cat.nombre}">Ficción</label>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold text-muted small text-uppercase">Formato</h6>
+                        <div class="mb-3">
+                            <div class="form-check mb-1">
+                                <input class="form-check-input" type="checkbox" name="formatos" value="TAPA_BLANDA" id="fmt-blanda"
+                                       th:checked="${param.formatos != null and #arrays.contains(param.formatos, 'TAPA_BLANDA')}"
+                                       onchange="this.form.submit()">
+                                <label class="form-check-label" for="fmt-blanda">Tapa Blanda</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input" type="checkbox" name="formatos" value="TAPA_DURA" id="fmt-dura"
+                                       th:checked="${param.formatos != null and #arrays.contains(param.formatos, 'TAPA_DURA')}"
+                                       onchange="this.form.submit()">
+                                <label class="form-check-label" for="fmt-dura">Tapa Dura</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input" type="checkbox" name="formatos" value="DE_BOLSILLO" id="fmt-bolsillo"
+                                       th:checked="${param.formatos != null and #arrays.contains(param.formatos, 'DE_BOLSILLO')}"
+                                       onchange="this.form.submit()">
+                                <label class="form-check-label" for="fmt-bolsillo">De Bolsillo</label>
+                            </div>
                         </div>
                     </div>
-
-                    <h6 class="fw-bold text-muted small text-uppercase">Formato</h6>
-                    <div class="mb-3">
-                        <div class="form-check mb-1"><input class="form-check-input" type="checkbox"><label class="form-check-label">Tapa Blanda</label></div>
-                        <div class="form-check mb-1"><input class="form-check-input" type="checkbox"><label class="form-check-label">Tapa Dura</label></div>
-                    </div>
-                </div>
+                </form>
             </aside>
 
             <main class="col-md-9">
@@ -41,6 +69,13 @@
                 </div>
 
                 <div class="row row-cols-1 row-cols-md-4 g-3">
+                    
+                    <div class="col-12 text-center py-5" th:if="${#lists.isEmpty(libros)}">
+                        <i class="bi bi-journal-x display-1 text-muted opacity-50 mb-3"></i>
+                        <h5 class="text-muted">No encontramos libros con esos filtros.</h5>
+                        <a href="/tienda" class="btn btn-outline-dark mt-2">Ver todo el catálogo</a>
+                    </div>
+
                     <div class="col" th:each="libro : ${libros}">
                         <div class="card h-100 text-center border-0 shadow-sm p-2 bg-white">
                             <img th:src="${libro.imagenPortada != null ? libro.imagenPortada : 'https://via.placeholder.com/150x200'}" 
@@ -55,7 +90,7 @@
                                     <div class="my-2 p-1 rounded bg-light small">
                                         <div class="d-flex justify-content-between px-2">
                                             <span>Precio:</span> 
-                                            <strong th:text="'S/ ' + ${libro.precioVentaActual}">S/ 0.00</strong>
+                                            <strong class="text-danger" th:text="'S/ ' + ${libro.precioVentaActual}">S/ 0.00</strong>
                                         </div>
                                     </div>
                                 </div>

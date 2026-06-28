@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                 // Rutas públicas
                 .requestMatchers("/tienda/vista-login", "/login", "/registro").permitAll()
-                .requestMatchers("/tienda", "/tienda/libro/**").permitAll()
+                .requestMatchers("/tienda","/error","/tienda/libro/**").permitAll()
                 // Protegidas por rol
                 .requestMatchers("/admin/**").hasAuthority("ADMINISTRADOR")
                 .requestMatchers("/almacen/**").hasAuthority("ALMACENERO")

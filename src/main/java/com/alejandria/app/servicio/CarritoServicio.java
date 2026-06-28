@@ -3,8 +3,10 @@ package com.alejandria.app.servicio;
 import com.alejandria.app.modelo.Carrito;
 import com.alejandria.app.modelo.CarritoDetalle;
 import com.alejandria.app.modelo.CarritoDetalleId;
+import com.alejandria.app.modelo.Cliente; // Importación añadida
 import com.alejandria.app.modelo.Libro;
 import com.alejandria.app.repositorio.CarritoRepositorio;
+import com.alejandria.app.repositorio.ClienteRepositorio; // Importación añadida
 import com.alejandria.app.repositorio.LibroRepositorio;
 import com.alejandria.app.repositorio.CarritoDetalleRepositorio;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class CarritoServicio {
     private final CarritoRepositorio carritoRepositorio;
     private final CarritoDetalleRepositorio carritoDetalleRepositorio;
     private final LibroRepositorio libroRepositorio;
+    private final ClienteRepositorio clienteRepositorio; // Repositorio añadido
 
     public Optional<Carrito> obtenerPorCliente(Integer clienteId) {
         return carritoRepositorio.findByClienteId(clienteId);
@@ -27,8 +30,16 @@ public class CarritoServicio {
 
     @Transactional
     public void agregarLibroACarrito(Integer clienteId, Integer libroId, int cantidad) {
+        
+        // Lógica actualizada: Busca el carrito o crea uno nuevo si el cliente no lo tiene
         Carrito carrito = carritoRepositorio.findByClienteId(clienteId)
-                .orElseThrow(() -> new RuntimeException("No se encontró un carrito asociado al cliente."));
+                .orElseGet(() -> {
+                    Cliente cliente = clienteRepositorio.findById(clienteId)
+                            .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
+                    Carrito nuevoCarrito = new Carrito();
+                    nuevoCarrito.setCliente(cliente);
+                    return carritoRepositorio.save(nuevoCarrito);
+                });
         
         Libro libro = libroRepositorio.findById(libroId)
                 .orElseThrow(() -> new RuntimeException("El producto que intenta agregar no existe."));

@@ -27,7 +27,7 @@ public class Pedido {
     @ToString.Exclude
     private Cliente cliente;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // <--- Agregamos esto
     @JoinColumn(name = "DIRECCION_ENVIO_ID")
     @ToString.Exclude
     private DireccionEnvio direccionEnvio;

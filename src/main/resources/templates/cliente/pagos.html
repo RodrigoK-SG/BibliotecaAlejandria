@@ -13,17 +13,47 @@
     <div th:replace="~{componentes/componente :: navbar}"></div>
 
     <div class="container mt-4 mb-5">
-        <div class="mb-2">
-            <a href="/tienda" class="text-decoration-none text-muted small"><i class="bi bi-chevron-left"></i> Volver al catálogo</a>
-        </div>
+        <div class="mb-4">
+		    <a href="/tienda"
+		       class="btn text-white px-4 py-2 fw-bold shadow-sm"
+		       style="background-color: #c86b66; border-radius: 8px;">
+		        <i class="bi bi-arrow-left me-2"></i>VOLVER AL CATÁLOGO
+		    </a>
+		</div>
         <h3 class="fw-bold mb-4">Finalizar Compra</h3>
         
         <form th:action="@{/tienda/checkout}" method="POST" id="formCheckout">
             <div class="row g-4">
                 
                 <div class="col-lg-8">
+                    <!-- NUEVO: Tarjeta de Datos Personales -->
                     <div class="card border-0 shadow-sm p-4 mb-4 bg-white" style="border-radius: 12px;">
-                        <h5 class="fw-bold mb-4"><span class="badge rounded-circle me-2" style="background-color: #c86b66; padding: 0.5em 0.7em;">1</span>Información de Envío</h5>
+                        <h5 class="fw-bold mb-4"><span class="badge rounded-circle me-2" style="background-color: #c86b66; padding: 0.5em 0.7em;">1</span>Datos Personales</h5>
+                        
+                        <div class="row g-3">
+    <!-- Usa cliente.usuario.nombreCompleto (según como lo tengas en tu entidad) -->
+						    <div class="col-md-6">
+						        <label class="form-label small text-muted fw-bold mb-1">Nombre Completo</label>
+						        <input type="text" name="nombre" class="form-control" 
+						               th:value="${cliente != null and cliente.usuario != null ? cliente.usuario.nombreCompleto : ''}" required>
+						    </div>
+						    <div class="col-md-6">
+						        <label class="form-label small text-muted fw-bold mb-1">Correo Electrónico</label>
+						        <input type="email" name="correo" class="form-control" 
+						               th:value="${cliente != null and cliente.usuario != null ? cliente.usuario.email : ''}" required>
+						    </div>
+						    <!-- El teléfono sí parece estar en Cliente -->
+						    <div class="col-md-6">
+						        <label class="form-label small text-muted fw-bold mb-1">Número de Teléfono</label>
+						        <input type="text" name="telefono" class="form-control" 
+						               th:value="${cliente != null ? cliente.telefono : ''}" required>
+						    </div>
+						</div>
+                    </div>
+
+                    <!-- Tarjeta de Información de Envío (Ahora es el paso 2) -->
+                    <div class="card border-0 shadow-sm p-4 mb-4 bg-white" style="border-radius: 12px;">
+                        <h5 class="fw-bold mb-4"><span class="badge rounded-circle me-2" style="background-color: #c86b66; padding: 0.5em 0.7em;">2</span>Información de Envío</h5>
                         
                         <div class="mb-3">
                             <label class="form-label small text-muted fw-bold mb-1">Dirección Completa de Envío</label>
@@ -31,8 +61,9 @@
                         </div>
                     </div>
 
+                    <!-- Tarjeta de Método de Pago (Ahora es el paso 3) -->
                     <div class="card border-0 shadow-sm p-4 bg-white" style="border-radius: 12px;">
-                        <h5 class="fw-bold mb-4"><span class="badge rounded-circle me-2" style="background-color: #c86b66; padding: 0.5em 0.7em;">2</span>Método de Pago</h5>
+                        <h5 class="fw-bold mb-4"><span class="badge rounded-circle me-2" style="background-color: #c86b66; padding: 0.5em 0.7em;">3</span>Método de Pago</h5>
                         
                         <div class="d-flex flex-column gap-2">
                             <input type="radio" name="metodoPago" id="pagoTarjeta" value="TARJETA_CREDITO" class="custom-radio-input" checked>
@@ -69,6 +100,7 @@
                     </div>
                 </div> 
 
+                <!-- Resumen del Pedido -->
                 <div class="col-lg-4">
                     <div class="card border-0 shadow-sm p-4 bg-white sticky-top" style="border-radius: 16px;">
                         <h5 class="fw-bold mb-4">Resumen del Pedido</h5>

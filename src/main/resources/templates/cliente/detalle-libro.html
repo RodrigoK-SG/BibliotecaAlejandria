@@ -3,63 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Librería de Alejandría - Detalle del Libro</title>
+    <title th:text="${libro.titulo} + ' | Librería de Alejandría'">Detalle del Libro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/css/estilos.css">
+    <style>
+        .btn-hover-zoom { transition: all 0.3s ease; }
+        .btn-hover-zoom:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(200, 107, 102, 0.3); }
+        .img-portada-detalle { transition: transform 0.5s ease; border-radius: 12px; }
+        .img-portada-detalle:hover { transform: scale(1.02); }
+        .card-ficha { background: #fdfcf9; border-left: 4px solid #c86b66; border-radius: 8px; }
+    </style>
 </head>
-<body class="bg-alejandria-page">
+<body class="bg-light">
 
     <div th:replace="~{componentes/componente :: navbar}"></div>
 
-    <div class="container mt-4 mb-5">
+    <div class="container my-5">
         <div class="mb-4">
-            <a href="/tienda" class="text-decoration-none text-muted small"><i class="bi bi-chevron-left me-1"></i>Volver al catálogo</a>
-        </div>
+		    <a href="/tienda"
+		       class="btn text-white px-4 py-2 fw-bold shadow-sm"
+		       style="background-color: #c86b66; border-radius: 8px;">
+		        <i class="bi bi-arrow-left me-2"></i>VOLVER AL CATÁLOGO
+		    </a>
+		</div>
 
-        <div class="row g-5 bg-white p-4 rounded shadow-sm">
-            <div class="col-md-4 text-center">
+        <div class="row g-5 bg-white p-4 p-md-5 rounded shadow-sm border border-light">
+            <div class="col-md-4 col-lg-3 text-center">
                 <img th:src="${libro.imagenPortada != null ? libro.imagenPortada : 'https://via.placeholder.com/300x450'}" 
-                     class="img-fluid rounded shadow-sm mb-3 img-portada-detalle" th:alt="${libro.titulo}">
+                     class="img-fluid img-portada-detalle shadow-lg" th:alt="${libro.titulo}">
             </div>
 
-            <div class="col-md-8">
-                <h1 class="fw-bold mb-1 font-editorial-titulo" th:text="${libro.titulo}">Título del Libro</h1>
-                
-                <div class="mb-4 mt-3">
-                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2"><i class="bi bi-check-circle-fill me-1"></i>En Stock disponible</span>
+            <div class="col-md-8 col-lg-9">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h1 class="fw-bold mb-1" style="color: #2c3e50; font-family: 'Georgia', serif;" th:text="${libro.titulo}">Título</h1>
+                        <p class="text-muted fs-5 mb-3" th:text="${libro.editorial != null ? libro.editorial.nombre : 'Editorial Alejandría'}">Editorial</p>
+                    </div>
+                    <span class="badge bg-success rounded-pill px-3 py-2"><i class="bi bi-check2-circle me-1"></i> Stock Disponible</span>
                 </div>
 
-                <div class="card p-3 bg-light border-light shadow-sm mb-4">
-                    <h6 class="fw-bold mb-3 small text-uppercase text-muted">Ficha Técnica</h6>
-                    <div class="row g-3 small">
-                        <div class="col-6 col-md-4"><strong>Editorial:</strong> <span th:text="${libro.editorial != null ? libro.editorial.nombre : 'S/E'}">Editorial</span></div>
-                        <div class="col-6 col-md-4"><strong>Páginas:</strong> <span th:text="${libro.paginas}">0</span></div>
-                        <div class="col-6 col-md-4"><strong>ISBN:</strong> <span th:text="${libro.isbn}">0000000000</span></div>
-                        <div class="col-12 mt-2"><strong>Formato:</strong> <span th:text="${#strings.replace(libro.formato.name(), '_', ' ')}">Formato</span></div>
+                <hr class="my-3 opacity-25">
+
+                <div class="row g-3 my-3">
+                    <div class="col-12 col-md-4 card-ficha p-3">
+                        <small class="text-muted d-block text-uppercase fw-bold">Formato</small>
+                        <span class="fw-bold" th:text="${#strings.replace(libro.formato.name(), '_', ' ')}">Tapa Dura</span>
+                    </div>
+                    <div class="col-12 col-md-4 card-ficha p-3">
+                        <small class="text-muted d-block text-uppercase fw-bold">Páginas</small>
+                        <span class="fw-bold" th:text="${libro.paginas} + ' pág.'">0</span>
+                    </div>
+                    <div class="col-12 col-md-4 card-ficha p-3">
+                        <small class="text-muted d-block text-uppercase fw-bold">ISBN</small>
+                        <span class="fw-bold" th:text="${libro.isbn}">000-000</span>
                     </div>
                 </div>
 
-                <div class="row g-2 mb-4">
-                    <div class="col-md-6">
-                        <div class="p-3 rounded border border-danger-subtle bg-white">
-                            <span class="small text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Precio Exclusivo Online</span>
-                            <h3 class="fw-bold m-0 text-danger" th:text="'S/ ' + ${libro.precioVentaActual}">S/ 0.00</h3>
-                        </div>
-                    </div>
+                <div class="mt-4">
+                    <span class="text-muted d-block mb-1 fw-bold text-uppercase" style="font-size: 0.8rem;">Precio Exclusivo Online</span>
+                    <h2 class="fw-bold text-danger display-6" th:text="'S/ ' + ${libro.precioVentaActual}">S/ 0.00</h2>
                 </div>
 
-                <div class="d-grid" style="max-width: 400px;">
-                    <form th:action="@{/tienda/carrito/agregar}" method="POST" class="d-flex gap-2">
+                <div class="mt-4 p-4 bg-light rounded-3 d-inline-block w-100" style="max-width: 500px;">
+                    <form th:action="@{/tienda/carrito/agregar}" method="POST" class="row g-3 align-items-center">
                         <input type="hidden" name="libroId" th:value="${libro.id}" />
                         
-                        <div style="width: 100px;">
-                            <input type="number" name="cantidad" value="1" min="1" class="form-control form-control-lg text-center" required />
+                        <div class="col-4 col-md-3">
+                            <label class="small fw-bold text-muted mb-1">CANTIDAD</label>
+                            <input type="number" name="cantidad" value="1" min="1" class="form-control form-control-lg border-0 shadow-sm" required />
                         </div>
                         
-                        <button type="submit" class="btn btn-lg text-white fw-bold flex-grow-1" style="background-color: #c86b66; border-radius: 8px; border: none;">
-                            <i class="bi bi-cart-plus me-2"></i>Añadir al Carrito
-                        </button>
+                        <div class="col-8 col-md-9">
+                            <label class="d-block mb-1">&nbsp;</label>
+                            <button type="submit" class="btn btn-lg text-white fw-bold w-100 btn-hover-zoom" style="background-color: #c86b66;">
+                                <i class="bi bi-cart-plus me-2"></i> AGREGAR AL CARRITO
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -67,7 +86,6 @@
     </div>
 
     <div th:replace="~{componentes/componente :: footer}"></div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

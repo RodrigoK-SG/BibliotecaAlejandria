@@ -5,6 +5,7 @@ import com.alejandria.app.modelo.enums.MetodoPago;
 import com.alejandria.app.modelo.enums.TipoComprobante;
 import com.alejandria.app.repositorio.CategoriaRepositorio;
 import com.alejandria.app.repositorio.ClienteRepositorio;
+import com.alejandria.app.repositorio.LibroRepositorio;
 import com.alejandria.app.servicio.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +30,7 @@ public class TiendaControlador {
     private final UsuarioServicio usuarioServicio;
     private final ClienteRepositorio clienteRepositorio;
     private final PasswordEncoder passwordEncoder;
+    private final LibroRepositorio libroRepositorio;
 
     // --- MÉTODO AUXILIAR PARA OBTENER EL CLIENTE LOGUEADO ---
     private Cliente obtenerClienteSesion(Principal principal) {
@@ -42,20 +44,43 @@ public class TiendaControlador {
     // 1. CATÁLOGO PÚBLICO
     // ==========================================
     @GetMapping
-    public String index(Model model, @RequestParam(value = "buscar", required = false) String buscar) {
-        model.addAttribute("categorias", categoriaRepositorio.findAll());
-        List<Libro> libros = libroServicio.listarTodos().stream()
-                .filter(Libro::getActivo) // Solo mostramos los activos
-                .collect(Collectors.toList());
-                
-        if (buscar != null && !buscar.isEmpty()) {
-            libros = libros.stream()
-                    .filter(l -> l.getTitulo().toLowerCase().contains(buscar.toLowerCase()))
-                    .collect(Collectors.toList());
+    public String verCatalogoTienda(
+            @RequestParam(name = "buscar", required = false) String buscar,
+            @RequestParam(name = "categorias", required = false) List<Integer> categoriasIds,
+            @RequestParam(name = "formatos", required = false) List<String> formatosSeleccionados,
+            Model model) {
+        List<Libro> libros;
+        // 1. Filtro principal por Búsqueda de Texto (Título o ISBN)
+        if (buscar != null && !buscar.trim().isEmpty()) {
+            libros = libroRepositorio.findByTituloContainingIgnoreCaseOrIsbnContainingIgnoreCase(buscar, buscar);
+        } else {
+            libros = libroRepositorio.findAll(); 
+            
         }
+        
+        // 2. Filtro por Categorías (Si el usuario marcó alguna)
+        if (categoriasIds != null && !categoriasIds.isEmpty()) {
+            libros = libros.stream()
+                .filter(libro -> libro.getCategorias().stream()
+                        .anyMatch(cat -> categoriasIds.contains(cat.getId())))
+                .collect(Collectors.toList());
+        }   
+
+        // 3. Filtro por Formatos (Si el usuario marcó alguno)
+        if (formatosSeleccionados != null && !formatosSeleccionados.isEmpty()) {
+            libros = libros.stream()
+                .filter(libro -> libro.getFormato() != null && formatosSeleccionados.contains(libro.getFormato().name()))
+                .collect(Collectors.toList());
+        }
+
         model.addAttribute("libros", libros);
+        
+        // Asegúrate de enviar también las categorías a la vista para renderizar el menú lateral
+        model.addAttribute("categorias", categoriaRepositorio.findAll());
+        
         return "cliente/index";
     }
+    
 
     @GetMapping("/libro/{slug}")
     public String detalleLibro(@PathVariable("slug") String slug, Model model) {
@@ -99,7 +124,10 @@ public class TiendaControlador {
         model.addAttribute("costoEnvio", costoEnvio);
         model.addAttribute("totalReal", subtotal.add(costoEnvio));
         
-        return "cliente/pagos"; // Asegúrate de que el HTML "pagos.html" exista en la carpeta cliente
+        // 👇 ESTA ES LA LÍNEA QUE FALTABA
+        model.addAttribute("cliente", cliente);
+        
+        return "cliente/pagos";
     }
 
     @PostMapping("/checkout")
@@ -175,12 +203,43 @@ public class TiendaControlador {
     // ==========================================
     // 4. VISTAS ESTÁTICAS Y LOGIN
     // ==========================================
-    @GetMapping("/vista-login") public String login() { return "cliente/login"; }
-    @GetMapping("/contacto") public String contacto() { return "cliente/contacto"; }
-    @GetMapping("/reglamento") public String reglamento() { return "cliente/reglamento"; }
-    @GetMapping("/terminos") public String terminos() { return "cliente/terminos"; }
-    @GetMapping("/reclamaciones") public String reclamaciones() { return "cliente/reclamaciones"; }
-    @GetMapping("/envio") public String envio() { return "cliente/envio"; }
-    @GetMapping("/devolucion") public String devolucion() { return "cliente/devolucion"; }
-    @GetMapping("/nuestra-historia") public String historia() { return "cliente/historia"; }
+    @GetMapping("/vista-login") 
+    public String login() { 
+    	return "cliente/login"; 
+    }
+    
+    @GetMapping("/contacto") 
+    public String contacto() { 
+    	return "cliente/contacto"; 
+    }
+    
+    @GetMapping("/reglamento") 
+    public String reglamento() { 
+    	return "cliente/reglamento"; 
+    }
+    
+    @GetMapping("/terminos") 
+    public String terminos() { 
+    	return "cliente/terminos"; 
+    }
+    
+    @GetMapping("/reclamaciones") 
+    public String reclamaciones() { 
+    	return "cliente/reclamaciones"; 
+    }
+    
+    @GetMapping("/envio") 
+    public String envio() { 
+    	return "cliente/envio"; 
+    }
+    
+    @GetMapping("/devolucion") 
+    public String devolucion() { 
+    	return "cliente/devolucion"; 
+    }
+    
+    @GetMapping("/nuestra-historia") 
+    public String historia() { 
+    	return "cliente/historia"; 
+    }
 }
