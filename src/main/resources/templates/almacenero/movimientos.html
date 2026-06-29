@@ -128,98 +128,112 @@
                 
                 <div class="modal-body px-4 pt-4 pb-4">
                     <form th:action="@{/almacen/movimientos/registrar}" th:object="${nuevoMovimiento}" method="post" id="formMovimiento">
-                        
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold text-muted">TIPO DE MOVIMIENTO <span class="text-danger">*</span></label>
-                            <select class="form-select text-secondary" id="selectTipoMovimiento" name="tipoMovimiento" required>
-                                <option value="" selected>Seleccione la operación...</option>
-                                <optgroup label="Entradas de Stock">
-                                    <option value="INGRESO_PROVEEDOR">Ingreso Proveedor (Nuevo Stock)</option>
-                                    <option value="DEVOLUCION">Devolución de Cliente</option>
-                                </optgroup>
-                                <optgroup label="Salidas de Stock">
-                                    <option value="VENTA_ONLINE">Despacho de Venta Online (Manual)</option>
-                                    <option value="MERMA">Merma / Dañado / Extraviado</option>
-                                </optgroup>
-                                <optgroup label="Otros">
-                                    <option value="AJUSTE_MANUAL">Ajuste Manual de Cuadre</option>
-                                </optgroup>
-                            </select>
-                        </div>
+    
+    <div class="mb-3">
+        <label class="form-label small fw-bold text-muted">TIPO DE MOVIMIENTO <span class="text-danger">*</span></label>
+        <select class="form-select text-secondary" id="selectTipoMovimiento" name="tipoMovimiento" required>
+            <option value="" selected>Seleccione la operación...</option>
+            <optgroup label="Entradas de Stock">
+                <option value="INGRESO_PROVEEDOR">Ingreso Proveedor (Nuevo Stock)</option>
+                <option value="DEVOLUCION">Devolución de Cliente</option>
+            </optgroup>
+            <optgroup label="Salidas de Stock">
+                <option value="VENTA_ONLINE">Despacho de Venta Online (Manual)</option>
+                <option value="MERMA">Merma / Dañado / Extraviado</option>
+            </optgroup>
+            <optgroup label="Otros">
+                <option value="AJUSTE_MANUAL">Ajuste Manual de Cuadre</option>
+            </optgroup>
+        </select>
+    </div>
 
-                        <div class="mb-3 border p-3 rounded bg-light" id="selectorTipoLibro">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="esNuevoLibro" id="radioExistente" value="false" checked>
-                                <label class="form-check-label fw-bold" for="radioExistente">Libro Existente en Catálogo</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="esNuevoLibro" id="radioNuevo" value="true">
-                                <label class="form-check-label fw-bold text-primary" for="radioNuevo">Registrar Nuevo Libro (Vía API)</label>
-                            </div>
-                        </div>
+    <div class="mb-3 border p-3 rounded bg-light" id="selectorTipoLibro">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="esNuevoLibro" id="radioExistente" value="false" checked>
+            <label class="form-check-label fw-bold" for="radioExistente">Libro Existente</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="esNuevoLibro" id="radioNuevo" value="true">
+            <label class="form-check-label fw-bold text-primary" for="radioNuevo">Registrar Nuevo (API/Manual)</label>
+        </div>
+    </div>
 
-                        <div class="mb-3" id="zonaLibroExistente">
-                            <label class="form-label small fw-bold text-muted">SELECCIONE EL LIBRO <span class="text-danger">*</span></label>
-                            <select class="form-select text-secondary" id="selectLibro" th:field="*{libro}">
-                                <option value="">Buscar título o ISBN...</option>
-                                <option th:each="l : ${libros}" th:value="${l.id}" th:text="${l.titulo + ' (' + l.isbn + ')'}"></option>
-                            </select>
-                        </div>
+    <div class="mb-3" id="zonaLibroExistente">
+        <label class="form-label small fw-bold text-muted">SELECCIONE EL LIBRO <span class="text-danger">*</span></label>
+        <select class="form-select text-secondary" id="selectLibro" th:field="*{libro}">
+            <option value="">Buscar título o ISBN...</option>
+            <option th:each="l : ${libros}" th:value="${l.id}" th:text="${l.titulo + ' (' + l.isbn + ')'}"></option>
+        </select>
+    </div>
 
-                        <div class="mb-3" id="zonaLibroNuevo" style="display: none;">
-                            <label class="form-label small fw-bold text-muted">NUEVO LIBRO (ISBN) <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="inputNuevoIsbn" name="nuevoIsbn" placeholder="Escriba el ISBN (ej. 9788437604947) y presione Enter">
-                                <button class="btn btn-primary" type="button" id="btnBuscarApi">
-                                    <i class="bi bi-search"></i> Buscar en API
-                                </button>
-                            </div>
-                            
-                            <div class="card mt-2 d-none" id="cardDatosApi">
-                                <div class="card-body d-flex">
-                                    <img id="apiImgPortada" src="" alt="Portada" width="60" class="me-3 rounded d-none">
-                                    <div class="w-100">
-                                        <input type="text" class="form-control form-control-sm mb-1 fw-bold text-primary" id="apiTitulo" name="nuevoTitulo" readonly placeholder="Título del libro (Se llena solo)">
-                                        <div class="d-flex gap-2 mt-2">
-										    <input type="number" class="form-control form-control-sm" id="apiPaginas" name="nuevasPaginas" placeholder="Páginas" min="1">
-										    
-										    <input type="number" step="0.01" class="form-control form-control-sm" name="nuevoPrecio" id="apiPrecio" placeholder="Precio (S/)">
-										    
-										    <input type="hidden" id="apiImagen" name="nuevaImagen">
-										    <input type="hidden" id="apiEditorial" name="nuevaEditorial"> 
-										    
-										    <select class="form-select form-select-sm" name="formato" id="apiFormato">
-										        <option value="TAPA_BLANDA">Tapa blanda</option>
-										        <option value="TAPA_DURA">Tapa dura</option>
-										        <option value="DE_BOLSILLO">Bolsillo</option>
-										    </select>
-										</div>											
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <div class="mb-3 p-3 bg-white border rounded shadow-sm" id="zonaLibroNuevo" style="display: none;">
+        <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">
+            <i class="bi bi-book"></i> Datos del Nuevo Libro
+        </h6>
+        
+        <div class="row g-3 mb-3">
+            <div class="col-md-8">
+                <label class="form-label small fw-bold text-muted">ISBN <span class="text-danger">*</span></label>
+                <div class="input-group">
+                    <input type="text" class="form-control border-primary" id="inputNuevoIsbn" name="nuevoIsbn" placeholder="Ej. 9788437604947">
+                    <button class="btn btn-primary" type="button" id="btnBuscarApi">
+                        <i class="bi bi-search"></i> API
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-bold text-muted">PRECIO (S/) <span class="text-danger">*</span></label>
+                <input type="number" step="0.01" class="form-control" name="nuevoPrecio" id="apiPrecio" placeholder="0.00">
+            </div>
+        </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-muted">CANTIDAD <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <button class="btn btn-outline-secondary" type="button" id="btnRestar" style="background-color: #f8f9fa;"><i class="bi bi-dash"></i></button>
-                                    <input type="number" class="form-control text-center font-monospace fw-bold" th:field="*{cantidad}" id="inputCantidad" value="1" min="1" required>
-                                    <button class="btn btn-outline-secondary" type="button" id="btnSumar" style="background-color: #f8f9fa;"><i class="bi bi-plus"></i></button>
-                                </div>
-                            </div>
-                        </div>
+        <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">TÍTULO DEL LIBRO <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="apiTitulo" name="nuevoTitulo" placeholder="Ingrese el título">
+        </div>
+        
+        <div class="row g-3 mb-3">
+            <div class="col-md-5">
+                <label class="form-label small fw-bold text-muted">EDITORIAL <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="apiEditorial" name="nuevaEditorial" placeholder="Nombre editorial">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-bold text-muted">FORMATO <span class="text-danger">*</span></label>
+                <select class="form-select" name="formato" id="apiFormato">
+                    <option value="TAPA_BLANDA">Tapa blanda</option>
+                    <option value="TAPA_DURA">Tapa dura</option>
+                    <option value="DE_BOLSILLO">Bolsillo</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted">PÁGINAS <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="apiPaginas" name="nuevasPaginas" placeholder="Ej. 350" min="1">
+            </div>
+        </div>
+        <input type="hidden" id="apiImagen" name="nuevaImagen">
+    </div>
 
-                        <div class="mb-4">
-                            <label class="form-label small fw-bold text-muted">OBSERVACIONES</label>
-                            <textarea class="form-control text-secondary" th:field="*{descripcion}" rows="2" placeholder="Motivo del movimiento, estado del libro..."></textarea>
-                        </div>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="form-label small fw-bold text-muted">CANTIDAD <span class="text-danger">*</span></label>
+            <div class="input-group">
+                <button class="btn btn-outline-secondary" type="button" id="btnRestar"><i class="bi bi-dash"></i></button>
+                <input type="number" class="form-control text-center font-monospace fw-bold" th:field="*{cantidad}" id="inputCantidad" value="1" min="1" required>
+                <button class="btn btn-outline-secondary" type="button" id="btnSumar"><i class="bi bi-plus"></i></button>
+            </div>
+        </div>
+    </div>
 
-                        <div class="d-flex justify-content-end gap-3">
-                            <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-maroon px-4">Confirmar Movimiento</button>
-                        </div>
-                    </form>
+    <div class="mb-4">
+        <label class="form-label small fw-bold text-muted">OBSERVACIONES</label>
+        <textarea class="form-control text-secondary" th:field="*{descripcion}" rows="2" placeholder="Motivo del movimiento..."></textarea>
+    </div>
+
+    <div class="d-flex justify-content-end gap-3">
+        <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-maroon px-4">Confirmar Movimiento</button>
+    </div>
+</form>
                 </div>
             </div>
         </div>

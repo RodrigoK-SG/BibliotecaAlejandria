@@ -43,10 +43,10 @@ public class AlmacenControlador {
     // ==========================================
     @GetMapping("/movimientos")
     public String verMovimientos(Model model) {
-        // Llenamos el select de libros
         model.addAttribute("libros", libroServicio.listarTodos());
         
-        // Evitar sobreescribir si ya existe un error en el modal devuelto por RedirectAttributes
+        // Si no existe 'nuevoMovimiento' en el modelo (por ejemplo, al entrar por primera vez),
+        // creamos uno nuevo vacío.
         if (!model.containsAttribute("nuevoMovimiento")) {
             model.addAttribute("nuevoMovimiento", new MovimientosInventario());
         }
@@ -61,7 +61,7 @@ public class AlmacenControlador {
     // ==========================================
     @PostMapping("/movimientos/registrar")
     public String registrarMovimiento(
-            Principal principal, // Extraemos el usuario logueado
+            Principal principal,
             @ModelAttribute("nuevoMovimiento") MovimientosInventario movimiento,
             @RequestParam(value = "esNuevoLibro", defaultValue = "false") boolean esNuevoLibro,
             @RequestParam(value = "nuevoIsbn", required = false) String nuevoIsbn,
@@ -69,12 +69,13 @@ public class AlmacenControlador {
             @RequestParam(value = "nuevaImagen", required = false) String nuevaImagen,
             @RequestParam(value = "nuevasPaginas", required = false, defaultValue = "100") Integer nuevasPaginas,
             @RequestParam(value = "nuevaEditorial", required = false) String nuevaEditorial, 
+            @RequestParam(value = "nuevaSinopsis", required = false) String nuevaSinopsis, // <-- NUEVO CAMPO
             @RequestParam(value = "formato", required = false) String formato, 
             @RequestParam(value = "nuevoPrecio", required = false, defaultValue = "0.00") BigDecimal nuevoPrecio,
             RedirectAttributes redirectAttributes) { 
         
         try {
-            // 1. Asignamos al operador (Almacenero) que está haciendo el movimiento
+            // 1. Asignamos al operador
             if (principal != null) {
                 Usuario operador = usuarioServicio.buscarPorEmail(principal.getName()).orElse(null);
                 movimiento.setUsuario(operador);
@@ -86,15 +87,23 @@ public class AlmacenControlador {
                 Libro nuevoLibro = new Libro();
                 nuevoLibro.setIsbn(nuevoIsbn);
                 nuevoLibro.setTitulo(nuevoTitulo != null && !nuevoTitulo.isEmpty() ? nuevoTitulo : "Libro Autogenerado (" + nuevoIsbn + ")");
-                nuevoLibro.setImagenPortada(nuevaImagen);
                 
-                // Aseguramos que las páginas siempre sean mayor a 0
+                // === MAGIA DE LA IMAGEN AQUÍ ===
+                // Si la API mandó una imagen la usamos, si no, ARMAMOS EL LINK AUTOMÁTICAMENTE con el ISBN
+                String urlPortada = (nuevaImagen != null && !nuevaImagen.trim().isEmpty()) 
+                        ? nuevaImagen 
+                        : "https://covers.openlibrary.org/b/isbn/" + nuevoIsbn.trim() + "-L.jpg";
+                
+                nuevoLibro.setImagenPortada(urlPortada);
+                // ===============================
+
+                nuevoLibro.setSinopsis(nuevaSinopsis);
                 nuevoLibro.setPaginas((nuevasPaginas != null && nuevasPaginas > 0) ? nuevasPaginas : 1);                
                 nuevoLibro.setPrecioVentaActual(nuevoPrecio); 
                 nuevoLibro.setFormato(FormatoLibro.valueOf(formato != null ? formato : "TAPA_BLANDA"));                
                 nuevoLibro.setActivo(true);
                 
-                // Buscar o crear editorial al vuelo
+                // Buscar o crear editorial
                 if (nuevaEditorial != null && !nuevaEditorial.trim().isEmpty()) {
                     Editorial editorial = editorialRepositorio.findByNombre(nuevaEditorial)
                             .orElseGet(() -> {
@@ -107,7 +116,6 @@ public class AlmacenControlador {
                     throw new RuntimeException("Debe especificar una editorial para el nuevo libro.");
                 }
                 
-                // Guardamos el libro primero para generar su ID
                 Libro libroGuardado = libroServicio.guardarLibro(nuevoLibro);
                 movimiento.setLibro(libroGuardado); 
                 
@@ -121,9 +129,9 @@ public class AlmacenControlador {
                 }
             }
 
-            // 3. Guardamos el movimiento (El servicio se encarga de actualizar el Stock Físico)
+            // 3. Guardamos el movimiento
             movimientoServicio.registrarMovimiento(movimiento);
-            redirectAttributes.addFlashAttribute("exito", "Movimiento de inventario registrado correctamente.");
+            redirectAttributes.addFlashAttribute("exito", "Movimiento registrado. Libro y portada guardados con éxito.");
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error: " + e.getMessage());

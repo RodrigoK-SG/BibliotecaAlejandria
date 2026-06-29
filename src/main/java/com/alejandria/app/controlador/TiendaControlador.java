@@ -66,6 +66,10 @@ public class TiendaControlador {
             libros = libroRepositorio.findAll(); 
         }
         
+        libros = libros.stream()
+                .filter(Libro::getActivo)
+                .collect(Collectors.toList());
+        
         // 2. Filtro por Categorías (Si el usuario marcó alguna)
         if (categoriasIds != null && !categoriasIds.isEmpty()) {
             libros = libros.stream()
