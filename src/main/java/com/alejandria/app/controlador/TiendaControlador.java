@@ -5,6 +5,7 @@ import com.alejandria.app.modelo.enums.MetodoPago;
 import com.alejandria.app.modelo.enums.TipoComprobante;
 import com.alejandria.app.repositorio.CategoriaRepositorio;
 import com.alejandria.app.repositorio.ClienteRepositorio;
+import com.alejandria.app.repositorio.InventarioVentaRepositorio;
 import com.alejandria.app.repositorio.LibroRepositorio;
 import com.alejandria.app.servicio.*;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class TiendaControlador {
     private final ClienteRepositorio clienteRepositorio;
     private final PasswordEncoder passwordEncoder;
     private final LibroRepositorio libroRepositorio;
+    private final InventarioVentaRepositorio inventarioVentaRepositorio;
 
     // --- MÉTODO AUXILIAR PARA OBTENER EL CLIENTE LOGUEADO ---
     private Cliente obtenerClienteSesion(Principal principal) {
@@ -103,12 +105,23 @@ public class TiendaControlador {
         Libro libro = libroServicio.buscarPorSlug(slug).orElse(null);
         if (libro == null || !libro.getActivo()) return "redirect:/tienda";
         
+        // --- 🟢 LÓGICA DE STOCK AÑADIDA ---
+        // Buscamos el inventario usando el ID del libro
+        InventarioVenta inventario = inventarioVentaRepositorio.findById(libro.getId()).orElse(null);
+        
+        // Extraemos la cantidad disponible (si no hay inventario registrado, es 0)
+        int stock = (inventario != null) ? inventario.getCantidadDisponible() : 0;
+        
+        // Pasamos la variable 'stock' a tu HTML de Thymeleaf
+        model.addAttribute("stock", stock);
+        // -----------------------------------
+        
         model.addAttribute("libro", libro);
         return "cliente/detalle-libro";
     }
 
-    // ==========================================
-    // 2. CARRITO Y CHECKOUT (Privado)
+ // ==========================================
+    // AGREGAR AL CARRITO (Validando InventarioVenta)
     // ==========================================
     @PostMapping("/carrito/agregar")
     @ResponseBody
@@ -121,6 +134,33 @@ public class TiendaControlador {
         if (cliente == null) {
             return ResponseEntity.status(401).body("No autorizado");
         }
+
+        // --- 🟢 NUEVA VALIDACIÓN DE STOCK BASADA EN TUS MODELOS ---
+        InventarioVenta inventario = inventarioVentaRepositorio.findById(libroId).orElse(null);
+        
+        if (inventario == null) {
+            return ResponseEntity.status(404).body("No se encontró información de inventario para este libro.");
+        }
+
+        if (inventario.getCantidadDisponible() <= 0) {
+            return ResponseEntity.status(400).body("Lo sentimos, no hay stock disponible de este libro.");
+        }
+
+        // Verificar cuántos de este libro YA tiene en el carrito
+        Carrito carrito = carritoServicio.obtenerPorCliente(cliente.getId()).orElse(null);
+        int cantidadEnCarrito = 0;
+        if (carrito != null && carrito.getDetalles() != null) {
+            cantidadEnCarrito = carrito.getDetalles().stream()
+                    .filter(d -> d.getLibro().getId().equals(libroId))
+                    .mapToInt(CarritoDetalle::getCantidad)
+                    .sum();
+        }
+
+        // Validar si lo que quiere agregar + lo que ya tiene supera lo disponible
+        if (inventario.getCantidadDisponible() < (cantidadEnCarrito + cantidad)) {
+            return ResponseEntity.status(400).body("Stock insuficiente. Solo hay " + inventario.getCantidadDisponible() + " unidades disponibles y ya tienes " + cantidadEnCarrito + " en tu carrito.");
+        }
+        // -----------------------------------------------------------
 
         carritoServicio.agregarLibroACarrito(cliente.getId(), libroId, cantidad);
 
@@ -173,25 +213,67 @@ public class TiendaControlador {
     }
 
     @PostMapping("/checkout")
+
     public String procesarCompra(Principal principal,
+
                                  @RequestParam("direccionCompleta") String direccionStr,
-                                 @RequestParam("metodoPago") String metodoPagoStr) {
+
+                                 @RequestParam("metodoPago") String metodoPagoStr,
+
+                                 org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) { // 1. Agregamos RedirectAttributes
+
+        
+
         Cliente cliente = obtenerClienteSesion(principal);
+
         if (cliente == null) return "redirect:/tienda/vista-login";
 
-        // Creamos una dirección al vuelo (en un proyecto más grande la elegirías de una lista)
+
+
+        // 2. VERIFICACIÓN: Obtener carrito y comprobar si tiene items
+
+        Carrito carrito = carritoServicio.obtenerPorCliente(cliente.getId()).orElse(null);
+
+        if (carrito == null || carrito.getDetalles().isEmpty()) {
+
+            // Enviamos un mensaje de error a la vista de pagos
+
+            redirectAttributes.addFlashAttribute("errorCarrito", "No puedes realizar una compra con el carrito vacío.");
+
+            return "redirect:/tienda/carrito";
+
+        }
+
+
+
+        // Creamos la dirección
+
         DireccionEnvio direccion = new DireccionEnvio();
+
         direccion.setCliente(cliente);
+
         direccion.setDireccionCompleta(direccionStr);
+
         direccion.setEtiqueta("Principal");
-        direccion.setCiudad("Lima"); // Por defecto
+
+        direccion.setCiudad("Lima");
+
+
 
         MetodoPago metodoPago = MetodoPago.valueOf(metodoPagoStr);
-        TipoComprobante comprobante = TipoComprobante.BOLETA; // Por defecto para B2C
+
+        TipoComprobante comprobante = TipoComprobante.BOLETA;
+
+
+
+        // Procesar
 
         Pedido pedidoGenerado = pedidoServicio.procesarVentaCheckout(cliente.getId(), direccion, metodoPago, comprobante);
 
+
+
         return "redirect:/tienda/pedido-exitoso?id=" + pedidoGenerado.getId();
+
     }
 
     @GetMapping("/pedido-exitoso")
@@ -200,6 +282,9 @@ public class TiendaControlador {
         return "cliente/pedido-exitoso";
     }
     
+ // ==========================================
+    // ACTUALIZAR CANTIDAD (Validando InventarioVenta)
+    // ==========================================
     @PostMapping("/carrito/actualizar-cantidad")
     @ResponseBody
     public ResponseEntity<String> actualizarCantidadCarrito(
@@ -209,11 +294,24 @@ public class TiendaControlador {
         try {
             Cliente cliente = obtenerClienteSesion(principal);
             if (cliente == null) return ResponseEntity.status(401).body("No autorizado");
+
+            // --- 🟢 NUEVA VALIDACIÓN DE STOCK BASADA EN TUS MODELOS ---
+            InventarioVenta inventario = inventarioVentaRepositorio.findById(libroId).orElse(null);
             
+            if (inventario == null) {
+                return ResponseEntity.status(404).body("No se encontró información de inventario para este libro.");
+            }
+
+            if (inventario.getCantidadDisponible() < nuevaCantidad) {
+                return ResponseEntity.status(400).body("Stock insuficiente. Solo quedan " + inventario.getCantidadDisponible() + " unidades disponibles.");
+            }
+            // -----------------------------------------------------------
+
             carritoServicio.actualizarCantidad(cliente.getId(), libroId, nuevaCantidad);
             return ResponseEntity.ok("OK");
+            
         } catch (Exception e) {
-            e.printStackTrace(); // Esto imprimirá el error real en tu consola de Eclipse/IntelliJ
+            e.printStackTrace(); 
             return ResponseEntity.status(500).body("Error en el servidor: " + e.getMessage());
         }
     }
@@ -278,12 +376,32 @@ public class TiendaControlador {
     public String actualizarDatosPerfil(Principal principal,
                                         @RequestParam("nombreRazonSocial") String nombre,
                                         @RequestParam("telefono") String telefono,
+                                        @RequestParam("email") String nuevoEmail,
                                         @RequestParam(value = "passwordActual", required = false) String passwordActual,
                                         @RequestParam(value = "passwordNueva", required = false) String passwordNueva) {
+        
         Cliente cliente = obtenerClienteSesion(principal);
         if (cliente == null) return "redirect:/tienda/vista-login";
 
         Usuario usuario = cliente.getUsuario();
+
+        // 1. Validar si el correo cambió
+        if (!usuario.getEmail().equals(nuevoEmail)) {
+            // Verificar si otro usuario ya usa ese correo
+            if (usuarioServicio.buscarPorEmail(nuevoEmail).isPresent()) {
+                return "redirect:/tienda/perfil?errorEmail=true"; 
+            }
+            usuario.setEmail(nuevoEmail);
+            
+            // Actualizamos en BD
+            usuarioServicio.actualizarEstado(usuario.getId(), true);
+            clienteRepositorio.save(cliente);
+            
+            // Forzamos salida porque el nombre de usuario (email) cambió
+            return "redirect:/logout?emailCambiado=true"; 
+        }
+
+        // 2. Si el correo no cambió, solo actualizamos datos y contraseña
         usuario.setNombreCompleto(nombre);
         cliente.setTelefono(telefono);
         
@@ -295,10 +413,26 @@ public class TiendaControlador {
             }
         }
         
-        usuarioServicio.actualizarEstado(usuario.getId(), true); // Guarda el usuario
+        usuarioServicio.actualizarEstado(usuario.getId(), true);
         clienteRepositorio.save(cliente);
         
         return "redirect:/tienda/perfil?cambioExitoso=true";
+    }
+    
+    @GetMapping("/pedido/{id}")
+    public String verDetallePedido(@PathVariable("id") Integer id, Principal principal, Model model) {
+        Cliente cliente = obtenerClienteSesion(principal);
+        if (cliente == null) return "redirect:/tienda/vista-login";
+
+        Pedido pedido = pedidoServicio.findById(id).orElse(null);
+        
+        // Si el pedido no existe o no le pertenece a este cliente, lo regresamos a su perfil
+        if (pedido == null || !pedido.getCliente().getId().equals(cliente.getId())) {
+            return "redirect:/tienda/perfil";
+        }
+
+        model.addAttribute("pedido", pedido);
+        return "cliente/detalle-pedido";
     }
 
     // ==========================================

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Pedido</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f8f9fa; color: #333333; margin: 0; padding: 20px; }
+        .contenedor { max-width: 700px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e9ecef; }
+        .cabecera { background-color: #fcfbf9; text-align: center; padding: 40px 20px; border-bottom: 1px solid #e9ecef; }
+        .cabecera h1 { color: #8c3f3b; font-family: 'Georgia', serif; margin: 0 0 5px 0; font-size: 28px; }
+        .cabecera p { color: #6c757d; font-size: 14px; margin: 0 0 20px 0; }
+        .etiqueta-boleta { display: inline-block; padding: 10px 20px; background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; }
+        .etiqueta-boleta h6 { margin: 0; color: #333333; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; }
+        .etiqueta-boleta h5 { margin: 5px 0 0 0; color: #dc3545; font-size: 18px; }
+        .cuerpo { padding: 30px; }
+        .seccion-datos { margin-bottom: 30px; }
+        .seccion-datos td { padding-bottom: 20px; vertical-align: top; width: 50%; }
+        .titulo-seccion { font-size: 12px; color: #6c757d; text-transform: uppercase; font-weight: bold; margin: 0 0 10px 0; }
+        .texto-dato { margin: 0 0 5px 0; font-size: 14px; color: #6c757d; }
+        .texto-destacado { margin: 0 0 5px 0; font-size: 16px; font-weight: bold; color: #212529; }
+        .tabla-productos { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .tabla-productos th { border-bottom: 2px solid #dee2e6; color: #6c757d; text-transform: uppercase; font-size: 12px; padding: 10px; text-align: center; }
+        .tabla-productos td { border-bottom: 1px solid #e9ecef; padding: 15px 10px; text-align: center; font-size: 14px; }
+        .tabla-productos th.izq, .tabla-productos td.izq { text-align: left; }
+        .tabla-productos th.der, .tabla-productos td.der { text-align: right; }
+        .resumen { width: 100%; max-width: 300px; margin-left: auto; font-size: 14px; color: #6c757d; }
+        .resumen td { padding: 5px 0; }
+        .resumen .total-box td { background-color: #fff9f9; padding: 15px; border: 1px solid #f5c2c7; border-radius: 5px; font-weight: bold; color: #212529; }
+        .resumen .total-precio { color: #dc3545; font-size: 18px; text-align: right; }
+        .pie-pagina { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e9ecef; }
+        .pie-pagina p { margin: 0 0 5px 0; font-size: 12px; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <div class="cabecera">
+            <h1>Librería de Alejandría</h1>
+            <p>La sabiduría del mundo en tus manos</p>
+            <div class="etiqueta-boleta">
+                <h6>Boleta de Venta Electrónica</h6>
+                <h5 th:text="'#WEB-' + ${pedido.id}">#WEB-000</h5>
+            </div>
+        </div>
+
+        <div class="cuerpo">
+            <table width="100%" class="seccion-datos">
+                <tr>
+                    <td>
+                        <h6 class="titulo-seccion">Datos del Cliente</h6>
+                        <p class="texto-destacado" th:text="${pedido.cliente.usuario.nombreCompleto}">Nombre del Cliente</p>
+                        <p class="texto-dato" th:text="'Fecha: ' + ${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy - HH:mm')}">Fecha</p>
+                        <p class="texto-dato">Estado: <strong style="color: #198754;" th:text="${pedido.estadoActual}">PAGADO</strong></p>
+                    </td>
+                    <td style="text-align: right;">
+                        <h6 class="titulo-seccion">Detalles de Entrega</h6>
+                        <div th:if="${pedido.direccionEnvio != null}">
+                            <p class="texto-destacado" th:text="${pedido.direccionEnvio.direccionCompleta}">Dirección</p>
+                            <p class="texto-dato" th:text="'Ciudad: ' + ${pedido.direccionEnvio.ciudad}">Ciudad</p>
+                            <p class="texto-dato">Modalidad: <strong style="color: #0d6efd;">Delivery</strong></p>
+                        </div>
+                        <div th:if="${pedido.direccionEnvio == null}">
+                            <p class="texto-destacado">Recojo en Tienda</p>
+                            <p class="texto-dato">Sede Principal - Alejandría</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <h6 class="titulo-seccion" style="color: #212529;">Artículos Adquiridos</h6>
+            <table class="tabla-productos">
+                <thead>
+                    <tr>
+                        <th class="izq">Descripción</th>
+                        <th>Formato</th>
+                        <th>Cant.</th>
+                        <th class="der">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="detalle : ${pedido.detalles}">
+                        <td class="izq">
+                            <strong style="color: #212529;" th:text="${detalle.libro.titulo}">Título del Libro</strong>
+                        </td>
+                        <td th:text="${#strings.replace(detalle.libro.formato.name(), '_', ' ')}">Formato</td>
+                        <td th:text="${detalle.cantidad}">1</td>
+                        <td class="der"><strong style="color: #212529;" th:text="'S/ ' + ${detalle.precioUnitario * detalle.cantidad}">S/ 0.00</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="resumen">
+                <tr>
+                    <td>Subtotal Productos</td>
+                    <td style="text-align: right;"><strong style="color: #212529;" th:text="'S/ ' + ${#numbers.formatDecimal(pedido.total - (pedido.direccionEnvio != null ? 5.99 : 0), 1, 2)}">S/ 0.00</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom: 15px;">Costo de Envío</td>
+                    <td style="text-align: right; padding-bottom: 15px;"><strong style="color: #212529;" th:text="${pedido.direccionEnvio != null} ? 'S/ 5.99' : 'Gratis'">S/ 5.99</strong></td>
+                </tr>
+                <tr class="total-box">
+                    <td>TOTAL PAGADO</td>
+                    <td class="total-precio" th:text="'S/ ' + ${pedido.total}">S/ 0.00</td>
+                </tr>
+            </table>
+
+            <div class="pie-pagina">
+                <p style="color: #8c3f3b; font-weight: bold;">¡Gracias por fomentar la lectura con nosotros!</p>
+                <p>Si tienes alguna consulta sobre tu pedido, escríbenos a soporte@alejandria.com</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

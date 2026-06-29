@@ -13,6 +13,11 @@
     <div th:replace="~{componentes/componente :: navbar}"></div>
 
     <div class="container mt-4 mb-5">
+    <!-- Agrega esto debajo del título o al inicio del contenedor -->
+		<div th:if="${errorCarrito}" class="alert alert-danger alert-dismissible fade show" role="alert">
+		    <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${errorCarrito}"></span>
+		    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
         <div class="mb-4">
 		    <a href="/tienda"
 		       class="btn text-white px-4 py-2 fw-bold shadow-sm"

@@ -13,7 +13,7 @@
             
             <div class="alert alert-success d-flex align-items-center justify-content-center gap-2 mb-4 py-2 small fw-bold" role="alert" style="border-radius: 10px;">
                 <i class="bi bi-cloud-check-fill fs-5"></i>
-                <span>El comprobante de pago ha sido generado y descargado.</span>
+                <span>El comprobante de pago ha sido generado y enviado.</span>
             </div>
 
             <div class="mb-3">
@@ -21,13 +21,15 @@
             </div>
             
             <h2 class="fw-bold text-dark mb-2">¡Compra Exitosa!</h2>
+            
             <p class="text-muted small mb-4">
-                ¡Gracias por tu compra, André! Tu pedido ha sido procesado correctamente y ya estamos preparando tus libros.
+                ¡Gracias por tu compra, <strong th:text="${pedido.cliente.usuario.nombreCompleto}">Nombre</strong>! 
+                Tu pedido ha sido procesado correctamente y ya estamos preparando tus libros.
             </p>
             
             <div class="bg-light p-3 rounded mb-4">
                 <p class="small text-muted mb-0">ID de Confirmación de Pedido</p>
-                <h5 class="fw-bold text-dark m-0" th:text="'#' + ${pedidoId != null ? pedidoId : '17'}">#17</h5>
+                <h5 class="fw-bold text-dark m-0" th:text="'#WEB-' + ${pedido.id}">#WEB-000</h5>
             </div>
             
             <div class="d-grid gap-2">

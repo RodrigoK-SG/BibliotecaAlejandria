@@ -39,7 +39,19 @@
                         <h1 class="fw-bold mb-1" style="color: #2c3e50; font-family: 'Georgia', serif;" th:text="${libro.titulo}">Título</h1>
                         <p class="text-muted fs-5 mb-3" th:text="${libro.editorial != null ? libro.editorial.nombre : 'Editorial Alejandría'}">Editorial</p>
                     </div>
-                    <span class="badge bg-success rounded-pill px-3 py-2"><i class="bi bi-check2-circle me-1"></i> Stock Disponible</span>
+                    <div class="d-flex align-items-center">
+					    <span th:if="${stock > 5}" class="badge bg-success rounded-pill px-3 py-2">
+					        <i class="bi bi-check2-circle me-1"></i> Stock Disponible
+					    </span>
+					
+					    <span th:if="${stock > 0 and stock <= 5}" class="badge bg-warning text-dark rounded-pill px-3 py-2">
+					        <i class="bi bi-exclamation-triangle me-1"></i> ¡Quedan pocos! (<span th:text="${stock}"></span>)
+					    </span>
+					
+					    <span th:if="${stock <= 0}" class="badge bg-danger rounded-pill px-3 py-2">
+					        <i class="bi bi-x-circle me-1"></i> Agotado
+					    </span>
+					</div>
                 </div>
 
                 <hr class="my-3 opacity-25">
@@ -65,20 +77,25 @@
                 </div>
 
                 <div class="mt-4 p-4 bg-light rounded-3 d-inline-block w-100" style="max-width: 500px;">
-                    <form th:action="@{/tienda/carrito/agregar}" method="POST" class="row g-3 align-items-center">
+                    <form id="formAgregarCarrito" th:action="@{/tienda/carrito/agregar}" method="POST" class="row g-3 align-items-center">
                         <input type="hidden" name="libroId" th:value="${libro.id}" />
                         
                         <div class="col-4 col-md-3">
-                            <label class="small fw-bold text-muted mb-1">CANTIDAD</label>
-                            <input type="number" name="cantidad" value="1" min="1" class="form-control form-control-lg border-0 shadow-sm" required />
-                        </div>
-                        
-                        <div class="col-8 col-md-9">
-                            <label class="d-block mb-1">&nbsp;</label>
-                            <button type="submit" class="btn btn-lg text-white fw-bold w-100 btn-hover-zoom" style="background-color: #c86b66;">
-                                <i class="bi bi-cart-plus me-2"></i> AGREGAR AL CARRITO
-                            </button>
-                        </div>
+						    <label class="small fw-bold text-muted mb-1">CANTIDAD</label>
+						    <input type="number" name="cantidad" value="1" min="1" 
+						           th:max="${stock}" 
+						           th:disabled="${stock <= 0}" 
+						           class="form-control form-control-lg border-0 shadow-sm" required />
+						</div>
+						
+						<div class="col-8 col-md-9">
+						    <label class="d-block mb-1">&nbsp;</label>
+						    <button type="submit" class="btn btn-lg text-white fw-bold w-100 btn-hover-zoom" 
+						            style="background-color: #c86b66;" 
+						            th:disabled="${stock <= 0}">
+						        <i class="bi bi-cart-plus me-2"></i> AGREGAR AL CARRITO
+						    </button>
+						</div>
                     </form>
                 </div>
             </div>
@@ -87,5 +104,37 @@
 
     <div th:replace="~{componentes/componente :: footer}"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('formAgregarCarrito').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que la página se recargue y se ponga en blanco
+
+            const form = this;
+            const formData = new FormData(form);
+
+            // Enviamos los datos al backend de forma silenciosa
+            fetch(form.action, {
+                method: 'POST',
+                body: new URLSearchParams(formData),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(async response => {
+                const mensajeRespuesta = await response.text();
+                
+                if (!response.ok) {
+                    // Si el servidor responde con error (ej. 400 por falta de stock)
+                    throw new Error(mensajeRespuesta);
+                }
+                
+                // Si la respuesta es OK (200), redirigimos al usuario a su carrito
+                window.location.href = '/tienda/carrito';
+            })
+            .catch(error => {
+                // Mostramos el mensaje de error en una alerta sin malograr la vista
+                alert(error.message);
+            });
+        });
+    </script>
 </body>
 </html>

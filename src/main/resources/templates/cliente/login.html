@@ -42,6 +42,10 @@
                         <i class="bi bi-exclamation-circle-fill me-1"></i> El correo ya está en uso.
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
+                    <div th:if="${param.emailCambiado}" class="alert alert-info py-2 small text-center alert-dismissible fade show" role="alert">
+					    <i class="bi bi-info-circle-fill me-1"></i> Correo actualizado. Por favor, inicia sesión con tu nuevo email.
+					    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					</div>
 
                     <div class="tab-content" id="accessTabsContent">
                         

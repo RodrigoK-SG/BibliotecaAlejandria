@@ -59,32 +59,33 @@
 
                 <div class="card border-0 shadow-sm p-4 bg-white min-vh-50" style="border-radius: 12px;">
                     
-                    <div id="tab-pedidos" class="nav-tab-content" th:classappend="${param.cambioExitoso == null and param.errorPassword == null} ? 'active' : 'd-none'">
-                        <h5 class="fw-bold text-dark mb-4" style="font-family: 'Georgia', serif;">Historial de Pedidos Online</h5>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle border-light">
-                                <thead class="table-light">
-                                    <tr class="small text-muted">
-                                        <th class="fw-normal">N° Pedido</th>
-                                        <th class="fw-normal">Fecha</th>
-                                        <th class="fw-normal">Total</th>
-                                        <th class="fw-normal">Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="pedido : ${listaPedidos}">
-                                        <td class="fw-bold text-dark small" th:text="'#WEB-' + ${pedido.id}">#WEB-001</td>
-                                        <td class="small" th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}">Fecha</td>
-                                        <td class="fw-bold text-dark small" th:text="'S/ ' + ${pedido.total}">S/ 0.00</td>
-                                        <td><span class="badge bg-success bg-opacity-10 text-success px-3 py-1 rounded-pill fw-normal" th:text="${pedido.estadoActual}">PAGADO</span></td>
-                                    </tr>
-                                    <tr th:if="${#lists.isEmpty(listaPedidos)}">
-                                        <td colspan="4" class="text-center py-4 text-muted small">No registras ninguna compra online.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+					    <table class="table table-hover align-middle border-light">
+					    <thead class="table-light">
+					        <tr class="small text-muted">
+					            <th class="fw-normal">N° Pedido</th>
+					            <th class="fw-normal">Fecha</th>
+					            <th class="fw-normal">Total</th>
+					            <th class="fw-normal">Estado</th>
+					            <th class="fw-normal text-center">Acciones</th> </tr>
+					    </thead>
+					    <tbody>
+					        <tr th:each="pedido : ${listaPedidos}">
+					            <td class="fw-bold text-dark small" th:text="'#WEB-' + ${pedido.id}">#WEB-001</td>
+					            <td class="small" th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}">Fecha</td>
+					            <td class="fw-bold text-dark small" th:text="'S/ ' + ${pedido.total}">S/ 0.00</td>
+					            <td><span class="badge bg-success bg-opacity-10 text-success px-3 py-1 rounded-pill fw-normal" th:text="${pedido.estadoActual}">PAGADO</span></td>
+					            
+					            <td class="text-center">
+					                <a th:href="@{/tienda/pedido/{id}(id=${pedido.id})}" class="btn btn-sm btn-outline-secondary" style="border-radius: 6px;">
+					                    Ver detalle
+					                </a>
+					            </td>
+					        </tr>
+					        <tr th:if="${#lists.isEmpty(listaPedidos)}">
+					            <td colspan="5" class="text-center py-4 text-muted small">No registras ninguna compra online.</td>
+					        </tr>
+					    </tbody>
+					</table>
 
                     <div id="tab-ajustes" class="nav-tab-content" th:classappend="${param.cambioExitoso != null or param.errorPassword != null} ? 'active' : 'd-none'">
                         <h5 class="fw-bold text-dark mb-4" style="font-family: 'Georgia', serif;">Datos Personales</h5>
@@ -96,6 +97,9 @@
                             <div th:if="${param.errorPassword}" class="alert alert-danger py-2 small text-center mb-3">
                                 <i class="bi bi-exclamation-triangle-fill me-1"></i> La contraseña actual es incorrecta.
                             </div>
+                            <div th:if="${param.errorEmail}" class="alert alert-danger py-2 small text-center mb-3">
+        						<i class="bi bi-exclamation-triangle-fill me-1"></i> Ese correo ya está registrado por otro usuario.
+    						</div>
 
                             <div class="row g-3 mb-4">
                                 <div class="col-md-12">
@@ -107,9 +111,10 @@
                                     <input type="text" class="form-control p-2 bg-light border-light" name="telefono" th:value="${cliente.telefono}" placeholder="Ej. 999888777" style="border-radius: 8px;">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label small text-muted">Correo Electrónico</label>
-                                    <input type="email" class="form-control p-2 bg-light border-light text-muted" name="emailContacto" th:value="${usuario.email}" required readonly style="border-radius: 8px;">
-                                </div>
+								    <label class="form-label small text-muted">Correo Electrónico</label>
+								    <input type="email" class="form-control p-2 bg-light border-light" 
+								           name="email" th:value="${usuario.email}" required style="border-radius: 8px;">
+								</div>
                             </div>
                             
                             <hr class="opacity-10 my-4">

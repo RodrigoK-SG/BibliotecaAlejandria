@@ -60,7 +60,7 @@ public class PedidoServicio {
             Libro libro = item.getLibro();
             int cantRequerida = item.getCantidad();
 
-            // 3.1 Verificamos y restamos el Stock Físico
+         // 3.1 Verificamos y restamos el Stock Físico
             InventarioVenta inventario = inventarioRepository.findById(libro.getId())
                     .orElseThrow(() -> new RuntimeException("No existe registro logístico para el libro: " + libro.getTitulo()));
 
@@ -68,7 +68,23 @@ public class PedidoServicio {
                 throw new RuntimeException("Stock insuficiente en tienda para el título: " + libro.getTitulo() + ". Disponible: " + inventario.getCantidadDisponible());
             }
 
+            // Restamos la cantidad disponible por la compra
             inventario.setCantidadDisponible(inventario.getCantidadDisponible() - cantRequerida);
+
+            // --- 🟢 NUEVO: Ajuste de Reserva ---
+            // Si el libro tenía reservas, descontamos la compra de la reserva también
+            if (inventario.getCantidadReservada() > 0) {
+                int nuevaReserva = Math.max(0, inventario.getCantidadReservada() - cantRequerida);
+                
+                // Doble validación de seguridad: La reserva JAMÁS puede ser mayor a lo disponible
+                if (nuevaReserva > inventario.getCantidadDisponible()) {
+                    nuevaReserva = inventario.getCantidadDisponible();
+                }
+                
+                inventario.setCantidadReservada(nuevaReserva);
+            }
+            // ------------------------------------
+
             inventarioRepository.save(inventario);
 
             // 3.2 Registramos el movimiento en el historial (Kardex)
